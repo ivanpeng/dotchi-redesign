@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/list_item_background"
+    android:layout_width="match_parent"
+    android:layout_height="85dp" >
+
+    <TextView
+        android:id="@+id/feed_profile_name"
+        android:layout_width="100dp"
+        android:layout_height="21dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@+id/list_item_picture"
+        android:padding="0dp"
+        android:textSize="16sp"
+        android:text="Invitee name" />
+
+    <ImageView
+        android:id="@+id/list_item_picture"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:padding="6dp"
+        android:src="@drawable/default_profile_pic" />
+
+    <TextView
+        android:id="@+id/matched_date"
+        android:layout_width="110dp"
+        android:layout_height="21dp"
+        android:layout_alignBaseline="@+id/feed_profile_name"
+        android:layout_toRightOf="@+id/feed_profile_name"
+        android:padding="0dp"
+        android:text=""
+        android:textColor="@color/red"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/event_description"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/feed_profile_name"
+        android:layout_below="@+id/feed_profile_name"
+        android:text="Event Description" />
+    
+    <LinearLayout
+	    android:id="@+id/icon_list"
+	    android:layout_width="80dp"
+	    android:layout_height="23dp"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignTop="@+id/feed_profile_name"
+	    android:layout_marginRight="8dp"
+	    android:gravity="right"
+	    android:orientation="horizontal"
+	    android:padding="0dp" >
+	</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:paddingLeft="6dp"
+        android:paddingRight="6dp"
+        android:layout_marginBottom="9dp"
+        android:background="@drawable/event_feed_bottom_background"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:id="@+id/event_top_choice_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="最多人選擇:"
+            android:textColor="@color/black"
+            android:textSize="11sp" />
+
+        <TextView
+            android:id="@+id/event_top_choice_name"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dp"
+            android:gravity="left|center_vertical"
+            android:text="Item Title"
+            android:textColor="@color/red"
+            android:textSize="11sp" />
+
+        <Button
+            android:id="@+id/event_show_all_List"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+	        android:background="@drawable/see_all_choices_button" />
+    </LinearLayout>
+
+</RelativeLayout>

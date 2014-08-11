@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
+    
+    <TextView 
+        
+        android:id="@+id/dotchi_package_name"
+        android:layout_width="200dp"
+        android:layout_height="55dp"
+        android:gravity="center"
+        android:text="Title"
+        android:textSize="16sp"
+    	android:background="@drawable/new_invite_icon_rect_frame" 
+        android:textColor="@color/brown_text" />
+
+</LinearLayout>

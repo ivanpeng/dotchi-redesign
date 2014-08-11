@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <!-- Stop auto focussing the EditText -->
+	<LinearLayout
+	    android:layout_width="0dp"
+	    android:layout_height="0dp"
+	    android:padding="0dp"
+	    android:background="@color/transparent"
+	    android:focusable="true"
+	    android:focusableInTouchMode="true">
+	</LinearLayout>
+	
+    <LinearLayout
+        android:id="@+id/search_container"
+        android:layout_height="45dp"
+        android:layout_width="match_parent"
+        android:padding="0dp"
+        android:orientation="vertical" >
+        
+    </LinearLayout>
+<!-- 
+    <EditText
+        android:id="@+id/search_container"
+   		android:layout_width="match_parent"
+    	android:layout_height="45dp"
+    	android:padding="0dp"
+    	android:hint="Search"
+    	/>
+ -->
+    <RelativeLayout
+        android:id="@+id/friend_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="0dp"
+        android:background="@drawable/friend_select_background" >
+        <ListView 
+            android:id="@+id/main_friends_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:choiceMode="multipleChoice"
+            />
+        
+    </RelativeLayout>
+
+</LinearLayout>

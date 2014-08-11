@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="240dp"
+    android:layout_height="350dp"
+    android:background="@drawable/dialog_background"
+    android:orientation="vertical" >
+    
+    <include layout="@layout/dialog_help_template"/>
+    
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="18dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="7dp"
+        android:padding="2dp"
+        android:src="@drawable/feeds_image" 
+        android:background="@drawable/tab_pressed_background"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:padding="5dp"
+        android:background="@color/white"
+        android:text="朋友送給你的最新Dotchi邀請會在此選單顯示！" />
+
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="18dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="7dp"
+        android:padding="2dp"
+        android:src="@drawable/pending_image" 
+        android:background="@drawable/tab_pressed_background"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:padding="5dp"
+        android:background="@color/white"
+        android:text="若還有其他被邀請者還沒完成的Dotchi遊戲則會在此選單內出現！" />
+    
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="18dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="7dp"
+        android:padding="2dp"
+        android:src="@drawable/events_image" 
+        android:background="@drawable/tab_pressed_background"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:padding="5dp"
+        android:background="@color/white"
+        android:text="所有邀請者完成Dotchi遊戲後，結案報告會顯示在這裡！" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="7dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:padding="5dp"
+        android:background="@color/white"
+        android:textColor="@color/red"
+        android:text="想辦個聚會嗎? 那就點選右下方的 \n『來兜聚吧』" />
+</LinearLayout>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+     >
+     <LinearLayout 
+	    android:id="@+id/swipe_right_container"
+	    android:layout_width="match_parent"
+	    android:layout_height="150dp"
+	    android:orientation="vertical">
+	    
+	</LinearLayout>
+	<RelativeLayout
+	    android:id="@+id/new_game_choice_container"
+	    android:layout_width="match_parent"
+	    android:layout_height="150dp" >
+	    <ImageView
+	        android:id="@+id/photo_image"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:adjustViewBounds="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_centerHorizontal="true"
+	        android:scaleType="centerCrop"
+	        android:src="@drawable/new_feed_photo_default" />
+	    
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="40dp"
+	        android:layout_alignBottom="@+id/photo_image"
+	        android:layout_alignParentLeft="true"
+	        android:background="@drawable/photo_roll_arrow_background"
+	        android:orientation="horizontal"
+	        android:paddingLeft="4dp" >
+	
+	        <LinearLayout
+	            android:layout_width="0dp"
+	            android:layout_height="match_parent"
+	            android:layout_marginLeft="4dp"
+	            android:layout_weight="1"
+	            android:orientation="vertical" >
+	
+	            <TextView
+	                android:id="@+id/dotchi_package_title"
+	                android:layout_width="match_parent"
+	                android:layout_height="20dp"
+	                android:gravity="center_vertical"
+	                android:text="Photo title"
+	                android:textColor="@color/white"
+	                android:textSize="15sp" />
+	
+	            <TextView
+	                android:id="@+id/dotchi_package_description"
+	                android:layout_width="match_parent"
+	                android:layout_height="20dp"
+	                android:layout_marginLeft="11dp"
+	                android:gravity="center_vertical"
+	                android:text="Description"
+	                android:textColor="@color/white"
+	                android:textSize="14sp" />
+	        </LinearLayout>
+	       
+	    </LinearLayout>
+	
+	    <ImageView
+	       	android:id="@+id/checkmark_if_selected"
+	       	android:layout_width="100dp"
+	       	android:layout_height="100dp"
+	       	android:layout_centerInParent="true"
+	       	android:alpha="0.7"
+	       	android:visibility="invisible"
+	       	android:src="@drawable/circle_check" />
+	    
+    </RelativeLayout>
+</RelativeLayout>

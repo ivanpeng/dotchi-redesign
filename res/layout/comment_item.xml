@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+    
+	<com.dotchi1.view.RoundedImageView 
+	    android:id="@+id/comment_head_view"
+	    android:layout_width="60dp"
+	    android:layout_margin="5dp"
+	    android:layout_height="match_parent"
+	    android:src="@drawable/default_profile_pic" />
+    
+	<LinearLayout 
+	   	android:layout_width="0dp"
+	   	android:layout_height="match_parent"
+	   	android:layout_weight="1"
+	   	android:orientation="vertical" >
+	   	
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="30dp"
+	        android:orientation="horizontal">
+	        <!-- 2 text views here -->
+	        <TextView
+	            android:id="@+id/username_text"
+	            android:layout_width="wrap_content"
+	            android:layout_height="match_parent"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:scrollHorizontally="false"
+	            android:textSize="18sp"
+	            android:textColor="@color/black"
+	            android:gravity="center_vertical"
+	            android:text="Username" />
+	        <TextView
+	            android:id="@+id/time_text"
+	            android:layout_width="0dp"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:layout_marginLeft="10dp"
+	            android:textSize="12sp"
+	            android:textColor="@color/gray"
+	            android:gravity="center_vertical"
+	            android:text="Time Left" />
+	    </LinearLayout>
+	    
+	    <TextView 
+	        android:id="@+id/comment_text"
+	        android:layout_width="match_parent"
+	        android:layout_height="25dp"
+	        android:textColor="@color/black"
+	        android:textSize="15sp"
+	        android:gravity="center_vertical"
+	        android:text="comment" />
+	</LinearLayout>
+	
+</LinearLayout>

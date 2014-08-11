@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="80dp" >
+    
+   	<LinearLayout 
+	    android:id="@+id/swipe_right_container"
+	    android:layout_width="match_parent"
+	    android:layout_height="80dp"
+	    android:orientation="vertical">
+	    
+	</LinearLayout>
+    <RelativeLayout
+        android:id="@+id/game_choice_container"
+        android:layout_width="match_parent"
+        android:layout_height="80dp" 
+        android:background="@color/white">
+	    <ImageView
+	        android:id="@+id/game_play_picture"
+	        android:layout_width="70dp"
+	        android:layout_height="70dp"
+	        android:layout_margin="5dp"
+	        android:src="@drawable/game_play_default_pic" />
+	
+	    <TextView
+	        android:id="@+id/game_play_choice_title"
+	        android:layout_width="240dp"
+	        android:layout_height="35dp"
+	        android:layout_alignTop="@+id/game_play_picture"
+	        android:layout_toRightOf="@+id/game_play_picture"
+	        android:gravity="center_vertical"
+	        android:text="Title"
+	        android:textColor="@color/teal"
+	        android:textSize="19sp" />
+	
+	    <TextView
+	        android:id="@+id/game_play_choice_description"
+	        android:layout_width="260dp"
+	        android:layout_height="20dp"
+	        android:layout_alignLeft="@+id/game_play_choice_title"
+	        android:layout_below="@+id/game_play_choice_title"
+	        android:text="Description"
+	        android:textColor="@color/black"
+	        android:textSize="12sp" />
+
+	    <TextView
+	        android:id="@+id/num_said_yes"
+	        android:layout_width="wrap_content"
+	        android:layout_height="24dp"
+	        android:layout_alignParentRight="true"
+	        android:layout_centerVertical="true"
+	        android:layout_marginRight="9dp"
+	        android:visibility="invisible"
+	        android:gravity="right|center_vertical"
+	        android:textColor="@color/red"
+	        android:textSize="15sp"
+	        android:text="1票" />
+    
+    </RelativeLayout>
+    
+
+</RelativeLayout>

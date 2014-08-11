@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res/com.dotchi1" >
+    
+    <ImageView
+        android:id="@+id/photo_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/new_feed_photo_default" />
+    
+    <ImageView
+        android:id="@+id/top_choice_symbol"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="290dp"
+        android:src="@drawable/new_gold" />
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignBottom="@+id/photo_image"
+        android:layout_alignParentLeft="true"
+        android:orientation="horizontal" >
+   			
+	    <LinearLayout
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1"
+	        android:background="@drawable/photo_roll_arrow_background"
+        	android:paddingLeft="74dp"
+	        android:orientation="horizontal" >
+	
+	        <LinearLayout
+	            android:layout_width="0dp"
+	            android:layout_height="match_parent"
+	            android:layout_marginLeft="4dp"
+	            android:layout_weight="1"
+	            android:orientation="vertical" >
+	
+	            <TextView
+	                android:id="@+id/photo_roll_title"
+	                android:layout_width="match_parent"
+	                android:layout_height="20dp"
+	                android:gravity="center_vertical"
+	                android:layout_marginRight="18dp"
+	                android:text="Photo title"
+	                android:maxLines="1"
+	                android:ellipsize="end"
+	                android:textColor="@color/white"
+	                android:textSize="15sp" />
+	
+	            <TextView
+	                android:id="@+id/photo_description"
+	                android:layout_width="match_parent"
+	                android:layout_height="20dp"
+	                android:layout_marginLeft="11dp"
+	                android:layout_marginRight="15dp"
+	                android:gravity="center_vertical"
+	                android:ellipsize="end"
+	                android:maxLines="1"
+	                android:text="0%"
+	                android:textColor="@color/white"
+	                android:textSize="14sp" />
+	        </LinearLayout>
+	
+	    </LinearLayout>
+	    
+	    <LinearLayout
+	        android:layout_width="20dp"
+	        android:layout_height="match_parent"
+	       	android:orientation="horizontal"/>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true" >
+
+        <de.passsy.holocircularprogressbar.HoloCircularProgressBar
+            android:id="@+id/photo_tickets_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            app:marker_progress="0.6"
+            app:marker_visible="false"
+            app:progress="0.4"
+            app:progress_background_color="@color/black"
+            app:progress_color="@color/white"
+            app:stroke_width="2dp"
+            app:thumb_visible="false" />
+
+        <TextView
+            android:id="@+id/photo_num_tickets"
+            android:layout_width="34dp"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="top|center_horizontal"
+            android:padding="3dp"
+            android:text="0 票"
+            android:textColor="@color/white"
+            android:textSize="10sp" />
+    </RelativeLayout>
+    
+</RelativeLayout>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="DateImageView">
+        <attr name="year" format="string" localization="suggested"/>
+        <attr name="month" format="string" localization="suggested"/>
+        <attr name="day" format="string" localization="suggested"/>
+        <attr name="hour" format="string" localization="suggested"/>
+        <attr name="min" format="string" localization="suggested"/>
+        <attr name="ampm" format="enum" >
+            <enum name="am" value="0" />
+            <enum name="pm" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>

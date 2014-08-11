@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/new_feed_menu_background" >
+    
+	<ImageView 
+	    android:id="@+id/menu_settings_drawer"
+	    android:layout_width="wrap_content"
+	    android:layout_height="match_parent"
+	    android:layout_marginLeft="5dp"
+	    android:layout_marginRight="5dp"
+	    android:src="@drawable/new_feed_drawer"
+	    />
+    
+	<TextView android:id="@+id/menu_new_feed_title"
+	    android:layout_width="0dp"
+	    android:layout_height="match_parent"
+	    android:layout_weight="1"
+	    android:textStyle="bold"
+	    android:gravity="center"
+	    android:text="個人動態"
+	    android:textSize="16sp" />
+	
+	<ImageView 
+	    android:id="@+id/menu_friends_drawer"
+	    android:layout_width="wrap_content"
+	    android:layout_height="match_parent"
+	    android:layout_marginRight="5dp"
+	    android:layout_marginLeft="5dp"
+	    android:src="@drawable/new_feed_friends_button" />
+	
+</LinearLayout>

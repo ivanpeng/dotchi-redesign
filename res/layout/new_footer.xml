@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/new_footer_background" >
+    
+	<ImageView 
+	    android:id="@+id/new_home_feed_button"
+	    android:padding="8dp"
+	    android:layout_width="0dp"
+	    android:layout_weight="0.25"
+	    android:layout_height="match_parent"
+	    android:src="@drawable/new_home_feed"/>
+	<ImageView 
+	    android:id="@+id/new_invite_friends_button"
+	    android:layout_width="0dp"
+	    android:layout_weight="0.25"
+	    android:padding="8dp"
+	    android:layout_height="match_parent"
+	    android:src="@drawable/new_invite_friends"/>
+
+	<ImageView
+	    android:id="@+id/new_messages_button"
+	    android:layout_width="0dp"
+	    android:layout_height="match_parent"
+	    android:layout_weight="0.25"
+	    android:padding="8dp"
+	    android:src="@drawable/new_messages" />
+
+	<ImageView 
+	    android:id="@+id/new_dotchi_package_button"
+	    android:layout_width="0dp"
+	    android:layout_weight="0.25"
+	    android:layout_height="match_parent"
+	    android:padding="8dp"
+	    android:src="@drawable/new_dotchi_package"/>
+    
+</LinearLayout>

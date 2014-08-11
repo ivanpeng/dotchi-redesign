@@ -1,0 +1,108 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/close_confirm_page_button"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:src="@drawable/gs_create_cancel" />
+
+	<TextView
+	    android:id="@+id/textView1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="20dp"
+	    android:layout_alignLeft="@+id/textView2"
+	    android:layout_below="@+id/close_confirm_page_button"
+	    android:layout_marginTop="28dp"
+	    android:text="公開"
+	    android:textColor="@color/white" />
+	
+    <ToggleButton
+        android:id="@+id/is_private_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="ToggleButton" />
+    
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+		android:layout_below="@+id/is_private_switch"
+		android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:text="記名" 
+        android:textColor="@color/white" />
+    <ToggleButton
+        android:id="@+id/is_personal_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="8dp"
+        android:text="ToggleButton" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_below="@+id/is_personal_switch"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:textColor="@color/white"
+        android:text="票數限制" />
+
+	<EditText
+	    android:id="@+id/vote_limit_text_box"
+	    android:layout_width="40dp"
+	    android:layout_height="30dp"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="8dp"
+	    android:text="0"
+	    android:gravity="center"
+	    android:textColor="@color/white"
+	    android:layout_below="@+id/textView3"
+	    android:background="@drawable/border" />
+	
+	<TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/vote_limit_text_box"
+        android:textColor="@color/white"
+        android:text="天數限制" />
+	
+	<EditText
+	    android:id="@+id/day_limit_text_box"
+	    android:layout_width="40dp"
+	    android:layout_height="30dp"
+	    android:layout_centerHorizontal="true"
+	    android:layout_marginTop="8dp"
+	    android:text="7"
+	    android:gravity="center"
+	    android:textColor="@color/white"
+	    android:layout_below="@+id/textView4"
+	    android:background="@drawable/border" />
+
+	<Button
+	    android:id="@+id/confirm_game_setting_button"
+	    android:layout_width="100dp"
+	    android:layout_height="45dp"
+	    android:layout_below="@+id/day_limit_text_box"
+	    android:layout_marginTop="30dp"
+	    android:layout_centerHorizontal="true"
+	    android:text="確定"
+	    android:textColor="@color/white"
+	    android:background="@drawable/border" />
+
+</RelativeLayout>

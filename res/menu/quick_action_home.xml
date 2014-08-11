@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:id="@+id/mood1" 
+        android:title="@string/mood"
+        android:icon="@drawable/yes" />
+    <item android:id="@+id/mood2"
+        android:title="@string/mood"
+        android:icon="@drawable/no" />
+
+</menu>

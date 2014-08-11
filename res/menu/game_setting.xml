@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.dotchi1.GameSettingActivity" >
+
+    <item
+        android:id="@+id/action_create_game_card"
+        android:orderInCategory="100"
+        android:showAsAction="always"
+       	android:icon="@drawable/gs_create_game_cards"/>
+
+</menu>

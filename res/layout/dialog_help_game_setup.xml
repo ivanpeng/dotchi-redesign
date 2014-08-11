@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="240dp"
+    android:layout_height="140dp"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background" >
+    
+    <include layout="@layout/dialog_help_template" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="8dp"
+        android:padding="5dp"
+        android:background="@color/white"
+        android:text="這裡可以選擇要和朋友進行的活動，或是自訂選項讓朋友來選擇喔，例如約朋友看正在上映的電影，\n決定出遊的日子，或者周末想約朋友做什麼有趣活動！" />
+</LinearLayout>

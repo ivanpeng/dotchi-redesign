@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/event_item_background"
+    android:layout_width="match_parent"
+    android:layout_height="150dp" >
+
+    <TextView
+        android:id="@+id/feed_profile_name"
+        android:layout_width="100dp"
+        android:layout_height="21dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="2dp"
+        android:layout_toRightOf="@+id/list_item_picture"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:paddingLeft="10dp"
+        android:text="Invitee name"
+        android:textSize="16sp" />
+
+    <ImageView
+        android:id="@+id/list_item_picture"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:padding="4dp"
+        android:src="@drawable/default_profile_pic" />
+
+    <TextView
+        android:id="@+id/event_description"
+        android:layout_width="match_parent"
+        android:layout_height="18dp"
+        android:layout_alignLeft="@+id/feed_profile_name"
+        android:layout_below="@+id/feed_profile_name"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:paddingLeft="10dp"
+        android:textSize="12sp"
+        android:text="Event Description" />
+    <TextView
+        android:id="@+id/matched_date"
+        android:layout_width="110dp"
+        android:layout_height="21dp"
+        android:layout_alignBaseline="@+id/feed_profile_name"
+        android:layout_toRightOf="@+id/feed_profile_name"
+        android:padding="0dp"
+        android:text="Matched Date: "
+        android:textColor="@color/red"
+        android:textSize="11sp" />
+
+    <LinearLayout
+        android:id="@+id/dotchi_text_ratios"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="13dp"
+        android:orientation="vertical"
+        android:padding="3dp" >
+
+        <TextView
+            android:id="@+id/dotchi_join_ratio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="DOTCHI: 11/11"
+            android:textColor="@color/gray"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/dotchi_join_percent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="100%"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/dotchi_ratio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="DOTCHI: 11/11"
+            android:textColor="@color/gray"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/dotchi_percent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="100%"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/date_images"
+        android:layout_width="234dp"
+        android:layout_height="100dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/event_description"
+        android:orientation="horizontal"
+        android:padding="10dp" >
+
+        <ImageView
+            android:id="@+id/dotchi_result_date"
+            android:layout_width="117dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/default_profile_pic" />
+
+        <ImageView
+            android:id="@+id/dotchi_result_time"
+            android:layout_width="117dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/default_profile_pic" />
+    </LinearLayout>
+    
+	<LinearLayout
+	    android:id="@+id/icon_list"
+	    android:layout_width="80dp"
+	    android:layout_height="23dp"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignTop="@+id/feed_profile_name"
+	    android:layout_marginRight="8dp"
+	    android:gravity="right"
+	    android:orientation="horizontal"
+	    android:padding="2dp" >
+	</LinearLayout>
+    
+</RelativeLayout>

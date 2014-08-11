@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" xmlns:app="http://schemas.android.com/apk/res/com.dotchi1">
+	
+    <de.passsy.holocircularprogressbar.HoloCircularProgressBar
+        android:id="@+id/bar"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:layout_centerInParent="true"
+        app:marker_visible="false"
+        app:progress="0.4"
+        app:stroke_width="10dp"
+        app:thumb_visible="false" />
+    
+    <com.dotchi1.view.RoundedImageView
+        android:layout_width="260dp"
+        android:layout_height="260dp"
+        android:layout_centerInParent="true"
+        android:src="@drawable/friend_default_profile_picture" />
+    
+</RelativeLayout>

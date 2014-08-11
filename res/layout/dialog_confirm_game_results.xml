@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="313dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+	<include
+	    android:layout_width="match_parent"
+	    android:layout_height="180dp" 
+	    layout="@layout/dialog_template" />
+
+	<include
+	    android:id="@+id/participating_friends_view"
+	    android:layout_width="match_parent"
+	    android:layout_height="60dp"
+	    layout="@layout/dialog_friends_template" />
+    <!--
+	<include
+	    android:id="@+id/completed_friends_view"
+	    android:layout_width="match_parent"
+	    android:layout_height="80dp"
+	    layout="@layout/dialog_friends_template" />
+	-->
+	<TextView
+   	    android:layout_width="match_parent"
+   	    android:layout_height="25dp"
+   	    android:textSize="13dp"
+   	    android:background="@drawable/dialog_text_background"
+   	    android:textColor="@color/black"
+   	    android:text="目前最多人選擇的項目"
+   	    android:padding="3dp"
+   	    android:gravity="center" />
+	
+	<ListView
+	    android:id="@+id/user_results"
+	    android:layout_width="match_parent"
+	    android:layout_height="120dp" />
+	
+	<ImageView
+	    android:id="@+id/dialog_game_complete_confirm_button"
+	    android:layout_width="match_parent"
+	    android:layout_height="55dp" 
+	    android:src="@drawable/dialog_game_complete_confirm_button"
+	    />
+</LinearLayout>

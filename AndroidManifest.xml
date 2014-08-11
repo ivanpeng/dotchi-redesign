@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.dotchi1"
+    android:versionCode="3"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="15"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:theme="@style/Theme.AppCompat.Light.DarkActionBar" >
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/app_id" />
+
+        <activity
+            android:name="com.dotchi1.LoginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Black.NoTitleBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.facebook.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.dotchi1.MainActivity"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.FriendSelectActivity"
+            android:label="@string/title_activity_friend_select"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.GameSettingActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_game_setting"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.CreateGameCardActivity"
+            android:label="@string/title_activity_create_game_card"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.ImageTestActivity"
+            android:label="@string/title_activity_image_test"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.GameActivity"
+            android:label="@string/title_activity_game"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.EventListActivity"
+            android:label="@string/title_activity_event_list" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.FriendHighVoteActivity"
+            android:label="@string/title_activity_friend_high_vote" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.SocialFeedActivity"
+            android:label="@string/title_activity_social_feed" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.NewMainActivity"
+            android:label="@string/title_activity_new_main"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.CommentActivity"
+            android:label="@string/title_activity_comment" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.NewInviteActivity"
+            android:label="@string/title_activity_new_invite"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.NewFriendSelectActivity"
+            android:label="@string/title_activity_new_friend_select"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.ShowDotchiPackageActivity"
+            android:label="@string/title_activity_show_dotchi_package" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.EventChoicesActivity"
+            android:label="@string/title_activity_event_choices" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.ChoosePhotoActivity"
+            android:label="@string/title_activity_choose_photo" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.ConfirmGameSettingActivity"
+            android:label="@string/title_activity_confirm_game_setting"
+            android:theme="@style/Theme.CustomTranslucent" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.ShowListActivity"
+            android:label="@string/title_activity_show_list" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.MakeGroupActivity"
+            android:label="@string/title_activity_make_group"
+            android:windowSoftInputMode="stateHidden|adjustResize" >
+        </activity>
+        <activity
+            android:name="com.dotchi1.FinalChoiceActivity"
+            android:label="@string/title_activity_final_choice" >
+        </activity>
+    </application>
+
+</manifest>

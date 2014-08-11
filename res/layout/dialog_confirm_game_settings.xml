@@ -1,0 +1,37 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="313dp"
+    android:layout_height="268dp"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background" >
+
+    <include
+        android:layout_width="match_parent"
+	    android:layout_height="168dp" 
+        layout="@layout/dialog_template" />
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        layout="@layout/dialog_friends_template" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:padding="0dp" >
+
+        <ImageButton
+            android:id="@+id/dialog_confirm_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/dialog_footer_color" />
+
+        <ImageView
+            android:id="@+id/confirm_button_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/dialog_title" />
+    </RelativeLayout>
+
+</LinearLayout>

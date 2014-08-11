@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+	<com.dotchi1.view.RoundedImageView
+	    android:id="@+id/head_picture"
+	    android:layout_width="40dp"
+	    android:layout_height="40dp"
+	    android:src="@drawable/default_profile_pic" />
+
+	<ImageView
+	    android:id="@+id/mood_picture"
+	    android:layout_width="22dp"
+	    android:layout_height="22dp"
+	    android:layout_alignBottom="@+id/head_picture"
+	    android:layout_alignRight="@+id/head_picture"
+	    android:src="@drawable/mood_1" />
+    
+</RelativeLayout>

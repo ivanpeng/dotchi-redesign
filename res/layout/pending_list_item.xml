@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/list_item_background"
+    android:padding="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <ImageView 
+        android:id="@+id/list_item_picture"
+        android:layout_height="70dp"
+        android:layout_width="70dp"
+        android:padding="6dp"
+        android:src="@drawable/default_profile_pic" />
+
+    <TextView
+        android:id="@+id/feed_profile_name"
+        android:layout_width="160dp"
+        android:layout_height="21dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@+id/list_item_picture"
+        android:padding="0dp"
+        android:textSize="16sp"
+        android:text="Invitee name" />
+
+    <TextView
+        android:id="@+id/time_left"
+        android:layout_width="170dp"
+        android:layout_height="15dp"
+        android:layout_alignLeft="@+id/feed_title"
+        android:layout_below="@+id/feed_profile_name"
+        android:textColor="@color/red"
+        android:padding="0dp"
+        android:text="Time Left: 1 day"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/feed_title"
+        android:layout_width="180dp"
+        android:layout_height="18dp"
+        android:layout_alignLeft="@+id/feed_profile_name"
+        android:layout_below="@+id/time_left"
+        android:padding="0dp"
+        android:text="Feed Title"
+        android:textSize="13sp" />
+
+	<LinearLayout
+	    android:id="@+id/icon_list"
+	    android:layout_width="80dp"
+	    android:layout_height="27dp"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignTop="@+id/feed_profile_name"
+	    android:layout_marginRight="8dp"
+	    android:gravity="right"
+	    android:orientation="horizontal"
+	    android:padding="5dp" >
+	</LinearLayout>
+	
+</RelativeLayout>

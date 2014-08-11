@@ -1,0 +1,103 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/new_invite_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/title_bar_height"
+        android:background="@color/yellow_title" >
+
+        <ImageButton
+            android:id="@+id/new_invite_back_home_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="8dp"
+            android:src="@drawable/new_invite_icon_back_to_home_button" 
+            android:background="@color/transparent"/>
+
+        <TextView
+            android:id="@+id/new_invite_title_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="Title"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+    </RelativeLayout>
+    <!-- EditText segment here -->
+
+    <RelativeLayout
+        android:id="@+id/new_invite_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/white" >
+
+        <EditText
+            android:id="@+id/new_invite_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:background="@color/white"
+            android:gravity="left|center"
+            android:hint="@string/new_invite_input_hint"
+            android:paddingLeft="10dp" />
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/new_invite_icon_line" />
+    </RelativeLayout>
+
+    <!-- Pages segment here -->
+
+    <RelativeLayout
+        android:id="@+id/new_invite_pages_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="260dp" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.5"
+        android:background="@drawable/new_invite_icon_line" />
+
+    <!-- Friends segment here -->
+
+    <RelativeLayout
+        android:id="@+id/new_invite_choice_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="2dp"
+        android:alpha="0.35"
+        android:background="@drawable/new_invite_icon_line" />
+
+    <!-- Send Invite Button segment here -->
+
+    <ImageButton
+        android:id="@+id/new_invite_send_invite_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:layout_gravity="center"
+        android:background="@color/transparent"
+        android:src="@drawable/new_invite_icon_invite_button" />
+
+</LinearLayout>

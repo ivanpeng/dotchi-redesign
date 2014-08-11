@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:orientation="horizontal" 
+     >
+    
+    <com.dotchi1.view.RoundedImageView
+        android:id="@+id/friend_head_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:padding="6dp"
+        android:src="@drawable/friend_image_default"
+        />
+    
+    <TextView
+        android:id="@+id/item_name"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="15dp"
+        android:textColor="@color/white"
+        android:text="Name" />
+
+    <ToggleButton
+        android:id="@+id/friend_invite_button"
+        android:layout_width="20dp"
+        android:layout_marginRight="12dp"
+        android:layout_height="20dp"
+ 		android:layout_gravity="center_vertical"
+        android:textOn=""
+        android:textOff=""
+        android:focusable="false"
+        android:background="@drawable/friend_bg_key" />
+
+</LinearLayout>

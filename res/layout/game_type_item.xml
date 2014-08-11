@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="125dp"
+    android:layout_height="125dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:paddingBottom="6dp"
+    android:orientation="vertical" >
+    
+    <ImageView
+        android:id="@+id/game_type_image"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/event_logo"
+        />
+    <TextView
+        android:id="@+id/game_name_text"
+        android:layout_width="101dp"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:text="Name" />
+
+</LinearLayout>

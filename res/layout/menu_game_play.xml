@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:orientation="vertical" 
+    android:background="@drawable/game_play_menu_background">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp" >
+
+	    <ImageView
+	        android:id="@+id/pop_up_commands_all_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:layout_alignParentRight="true"
+	        android:visibility="invisible"
+	        android:layout_alignParentTop="true"
+	        android:src="@drawable/game_play_menu_button" />
+
+	    <TextView
+	        android:id="@+id/game_play_title"
+	        android:layout_width="260dp"
+	        android:layout_height="match_parent"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:gravity="center_vertical"
+	        android:paddingLeft="10dp"
+	        android:text="Title"
+	        android:textColor="@color/white"
+	        android:textSize="18sp" />
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:orientation="horizontal" >
+        
+        <LinearLayout
+            android:id="@+id/game_menu_icon_container"
+            android:layout_width="wrap_content"
+            android:layout_height="24dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal">
+            
+            <ImageView 
+                android:id="@+id/game_menu_is_personal"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginRight="4dp"
+                android:src="@drawable/is_personal_negative_icon" />
+            <ImageView
+                android:id="@+id/game_menu_is_secret"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/is_secret_positive_icon" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/game_menu_date"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:layout_marginLeft="5dp"
+            android:gravity="left|center_vertical"
+            android:text="2014/05/29/ 09:39" />
+        <TextView
+            android:id="@+id/num_yes_remaining"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:textColor="@color/red"
+            android:textSize="16sp"
+            android:layout_marginRight="6dp"
+            android:paddingRight="5dp"
+            android:gravity="right|center_vertical"
+            android:text="0" />"
+    </LinearLayout>
+
+</LinearLayout>

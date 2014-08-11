@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/profile_background"
+    android:paddingTop="4dp"
+    android:paddingLeft="4dp"
+    android:paddingRight="4dp"
+    android:paddingBottom="0dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <ImageView
+        android:id="@+id/profile_picture"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:padding="4dp"
+        android:src="@drawable/default_profile_pic" />
+    
+    <TextView
+        android:id="@+id/profile_name"
+        android:layout_width="190dp"
+        android:layout_height="50dp"
+        android:background="@drawable/name_background"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/profile_picture"
+        android:padding="8dp"
+        android:text="Invalid Name"
+        android:textSize="20sp" />
+
+    <TableRow
+        android:id="@+id/table_row_subtab_fragments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/profile_picture"
+        android:background="@drawable/top_header_background" >
+
+    </TableRow>
+
+</RelativeLayout>

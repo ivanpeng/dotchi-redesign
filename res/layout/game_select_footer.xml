@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:gravity="center"
+    android:orientation="horizontal" 
+    android:background="@drawable/gs_footer_background">
+    
+    <ImageView 
+        android:id="@+id/is_private_image"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="4dp"
+        android:src="@drawable/is_private_button"/>
+    <ImageView
+        android:id="@+id/is_personal_image" 
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="5dp"
+        android:src="@drawable/is_personal_button" />
+    <ImageView
+        android:id="@+id/invite_friends_image"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_height="55dp"
+        android:clickable="true"
+        android:enabled="false"
+        android:src="@drawable/invite_friends_button" />
+    
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+	    <ImageView
+	        android:id="@+id/set_days_expiry_image"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:layout_marginLeft="2dp"
+	        android:layout_marginRight="2dp"
+	        android:inputType="number"
+	        android:src="@drawable/num_days_expire_button" />
+	    <TextView android:id="@+id/set_days_expiry_text"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerInParent="true"
+	        android:text="1"
+	        android:textColor="@color/white"
+	       	android:gravity="center_horizontal|top" />
+	</RelativeLayout>
+	<RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+	    <ImageView
+	        android:id="@+id/set_max_num_yes_image"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:layout_marginLeft="2dp"
+	        android:layout_marginRight="2dp"
+	        android:inputType="number"
+	        android:src="@drawable/num_yes_button" />
+    	<TextView android:id="@+id/set_max_num_yes_text"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerInParent="true"
+	        android:text="0"
+	        android:textColor="@color/white"
+	       	android:gravity="center_horizontal|top" />
+	</RelativeLayout>
+</LinearLayout>

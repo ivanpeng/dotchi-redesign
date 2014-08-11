@@ -1,0 +1,27 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <com.fortysevendeg.swipelistview.SwipeListView
+        xmlns:swipe="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/game_choices_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        swipe:swipeActionLeft="reveal"
+        swipe:swipeActionRight="reveal"
+        swipe:swipeAnimationTime="100"
+        swipe:swipeFrontView="@+id/new_game_choice_container"
+        swipe:swipeLeftView="@layout/swipe_left_view"
+        swipe:swipeRightView="@layout/swipe_right_view"
+        swipe:swipeBackView="@+id/swipe_right_container"
+        swipe:swipeCloseAllItemsWhenMoveList="false"
+        swipe:swipeMode="both"
+        swipe:swipeOffsetLeft="0dp"
+        swipe:swipeOffsetRight="0dp"
+        swipe:swipeOpenOnLongPress="false" />
+    
+</LinearLayout>
+

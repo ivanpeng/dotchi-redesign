@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_id">225324260981029</string>
+    <string name="app_name">Dotchi</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_main">Home</string>
+    <string name="title_activity_friend_select">Select Friends</string>
+    <string name="title_activity_game_setting">GameSettingActivity</string>
+    <string name="title_activity_create_game_card">Create Game Card</string>
+    <string name="title_activity_image_test">ImageTestActivity</string>
+    <string name="title_activity_game">GameActivity</string>
+    <string name="title_activity_event_list">EventListActivity</string>
+    <string name="title_activity_friend_high_vote">FriendHighVoteActivity</string>
+    <string name="api_root_url">http://www.plany.com.tw/dotchi/CodeIgniter/webservice</string>
+    <string name="api_test_root_url">http://www.plany.com.tw/dotchi-test/CodeIgniter/webservice</string>
+    <string name="title_activity_social_feed">SocialFeedActivity</string>
+    <string name="title_activity_new_main">NewMainActivity</string>
+    <string name="mood">Mood</string>
+    <string name="title_activity_comment">CommentActivity</string>
+    <string name="title_activity_new_invite">NewInviteActivity</string>
+
+    <!-- New invite string set -->
+    <string name="new_invite_input_hint">input_hint</string>
+    <string name="new_invite_index_add_some_choice">想要加入一些選擇?</string>
+    <string name="new_invite_title_index_page">約聚會</string>
+    <string name="new_invite_title_edit_page">編輯頁面</string>
+    <string name="new_invite_select_friends">選擇朋友</string>
+    <string name="title_activity_new_friend_select">NewFriendSelectActivity</string>
+    <string name="title_activity_show_dotchi_package">ShowDotchiPackageActivity</string>
+    <string name="title_activity_event_choices">EventChoicesActivity</string>
+    <string name="title_activity_choose_photo">ChoosePhotoActivity</string>
+    <string name="title_activity_confirm_game_setting">ConfirmGameSettingActivity</string>
+    <string name="title_activity_show_list">ShowListActivity</string>
+    <string name="title_activity_make_group">MakeGroupActivity</string>
+    <string name="title_activity_final_choice">FinalChoiceActivity</string>
+
+</resources>

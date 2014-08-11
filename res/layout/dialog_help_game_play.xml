@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="240dp"
+    android:layout_height="330dp"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_background" >
+    
+    <include layout="@layout/dialog_help_template" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="8dp"
+        android:padding="5dp"
+        android:textSize="13sp"
+        android:background="@color/white"
+        android:textColor="@color/red"
+        android:text="第一步.輸入「活動標題與時間」" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:textSize="13sp"
+        android:padding="5dp"
+        android:background="@color/white"
+        android:textColor="@color/black"
+        android:text="例如：晚上去那玩？大家來聚聚吧！也可輸入預定聚會時間\n決定出遊的日子，或者周末想約朋友做什麼有趣活動！" />
+        <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="8dp"
+        android:padding="5dp"
+        android:textSize="13sp"
+        android:background="@color/white"
+        android:textColor="@color/red"
+        android:text="第二步.設定「活動項目」" />
+    
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:textSize="13sp"
+        android:padding="5dp"
+        android:background="@color/white"
+        android:textColor="@color/black"
+        android:text="下方的選項是Dotchi幫您精選的活動項目，可以點選右上方的新增鈕來增加選項，也可以點選右上方的編輯鈕刪除。最下方的四個功能圖示： \n 1. 設定遊戲是否公開在動態牆\n 2. 設定遊戲是否記名投票\n 3. 設定回覆天數\n 4. 設定單選或複選票數" />
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="8dp" 
+        android:background="@color/white"
+        android:orientation="horizontal">
+        
+        <TextView 
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+        	android:textSize="13sp"
+       		android:textColor="@color/red"
+       		android:text="第三步.點選" />
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/gs_invite_friends_highlighted" />
+        
+    </LinearLayout>
+    
+     <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:textSize="13sp"
+        android:padding="5dp"
+        android:background="@color/white"
+        android:textColor="@color/black"
+        android:text="開始邀請朋友一起來決定吧！" />
+    
+</LinearLayout>

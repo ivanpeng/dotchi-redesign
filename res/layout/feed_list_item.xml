@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/list_item_background"
+    android:padding="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+    <ImageView 
+        android:id="@+id/list_item_picture"
+        android:layout_height="70dp"
+        android:layout_width="70dp"
+        android:padding="4dp"
+        android:src="@drawable/default_profile_pic" />
+
+    <TextView
+        android:id="@+id/feed_profile_name"
+        android:layout_width="160dp"
+        android:layout_height="21dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="6dp"
+        android:layout_toRightOf="@+id/list_item_picture"
+        android:paddingLeft="10dp"
+        android:textSize="16sp"
+        android:text="Invitee name" />
+
+    <TextView
+        android:id="@+id/time_left"
+        android:layout_width="170dp"
+        android:layout_height="15dp"
+        android:layout_alignLeft="@+id/feed_title"
+        android:layout_below="@+id/feed_profile_name"
+        android:textColor="@color/red"
+        android:paddingLeft="10dp"
+        android:visibility="invisible"
+        android:text="Time Left: 1 day"
+        android:textSize="11sp" />
+
+    <TextView
+        android:id="@+id/feed_title"
+        android:layout_width="185dp"
+        android:layout_height="18dp"
+        android:layout_alignLeft="@+id/feed_profile_name"
+        android:layout_below="@+id/time_left"
+        android:paddingLeft="10dp"
+        android:text="Feed Title"
+        android:textSize="12sp" />
+
+	<LinearLayout
+	    android:id="@+id/icon_list"
+	    android:layout_width="88dp"
+	    android:layout_height="29dp"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignBottom="@+id/feed_profile_name"
+	    android:layout_marginRight="8dp"
+	    android:gravity="right"
+	    android:orientation="horizontal"
+	    android:padding="0dp" >
+	</LinearLayout>
+
+	<ImageView
+	    android:id="@+id/yes_response_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignTop="@+id/no_response_button"
+	    android:layout_toLeftOf="@+id/no_response_button"
+	    android:paddingTop="5dp"
+	    android:src="@drawable/yes"
+	    android:visibility="invisible" />
+
+	<ImageView
+	    android:id="@+id/no_response_button"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignBottom="@+id/list_item_picture"
+	    android:layout_alignParentRight="true"
+	    android:paddingTop="5dp"
+	    android:src="@drawable/no"
+	    android:visibility="invisible" />
+
+</RelativeLayout>

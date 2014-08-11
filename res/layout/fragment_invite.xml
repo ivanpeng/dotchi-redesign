@@ -1,0 +1,22 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_invite"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="4dp"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp"
+    android:paddingTop="14dp"
+    android:background="@drawable/game_select_background"
+    tools:context="com.dotchi1.InviteFragment" >
+    
+    
+    <GridView
+        android:id="@+id/invite_choice_gridlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:columnWidth="125dp"
+        android:numColumns="3"
+        android:gravity="center"
+        />
+</RelativeLayout>

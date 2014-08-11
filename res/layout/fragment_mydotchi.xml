@@ -1,0 +1,17 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_mydotchi"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:padding="2dp"
+    tools:context="com.dotchi1.MyDotchiFragment" >
+    
+    <ListView android:id="@+id/mydotchi_list_items"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/main_activity_background"
+        android:dividerHeight="5dp"
+        android:padding="3dp"
+        />
+
+</RelativeLayout>
