@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="4dp"
     android:orientation="horizontal" >
     <TextView
         android:id="@+id/date_headline"
@@ -9,6 +11,8 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:layout_marginLeft="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
         android:gravity="center_vertical|left"
         android:text="2014-08-13" />
     
@@ -20,7 +24,7 @@
         android:layout_marginLeft="10dp"
         android:text="Saturday" />
     
-    <TextView
+    <Button
         android:id="@+id/add_date_button"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
