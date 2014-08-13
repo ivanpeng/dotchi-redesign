@@ -61,11 +61,16 @@ public class ChooseDateActivity extends Activity {
 			
 			@Override
 			public void onDateUnselected(Date date) {
-				dates.remove(date);
-				if (dates.size() == 0)
-					adapter.notifyDataSetInvalidated();
-				else
-					adapter.notifyDataSetChanged();
+				int datesRemoved = 0;
+				for (int i = 0; i < dates.size(); i ++)	{
+					Date d = dates.get(i);
+					if (isSameDay(date, d))	{
+						dates.remove(date);
+						adapter.notifyDataSetChanged();
+						datesRemoved++;
+					}
+				}
+				Log.d("Calendar", "Number of dates removed: " + datesRemoved);
 			}
 			
 			@Override
@@ -75,27 +80,40 @@ public class ChooseDateActivity extends Activity {
 					adapter = new CalendarAdapter(ChooseDateActivity.this, dates);
 					dateListView.setAdapter(adapter);
 				} else	{
-					Log.d("choose date activity", "entered here!");
 					adapter.notifyDataSetChanged();
 				}
 			}
 		});
 	}
 	
+	// This checks if the dates are the same (not necessarily the time)
+	protected boolean isSameDay(Date d1, Date d2)	{
+		Log.d("Calendar", "Comparing " + d1.toString() + " and " + d2.toString());
+		Calendar c1 = Calendar.getInstance(), c2 = Calendar.getInstance();
+		c1.setTime(d1);
+		c2.setTime(d2);
+		if (c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR) && c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR))
+			return true;
+		else
+			return false;
+	}
+	
 	protected void chooseTimeDialog(final Date date)	{
 		d = null;
 		final Calendar cal = Calendar.getInstance();
 		
-		View timePickerView = getLayoutInflater().inflate(R.layout.time_picker_view, null);
-
+		final TimePicker timePickerView = (TimePicker) getLayoutInflater().inflate(R.layout.time_picker_layout, null);
+		timePickerView.setIs24HourView(false);
+		timePickerView.setCurrentHour(cal.get(Calendar.HOUR));
+		timePickerView.setCurrentMinute(cal.get(Calendar.MINUTE));
+		
 		// This function opens up a dialog and creates a date
 		AlertDialog.Builder builder = new AlertDialog.Builder(this)
 			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					Log.d("Calendar", "Entered Here!");
-					h = ;
-					m = ;
+					h = timePickerView.getCurrentHour();
+					m = timePickerView.getCurrentMinute();
 					cal.setTime(date);
 					cal.set(Calendar.HOUR, h);
 					cal.set(Calendar.MINUTE, m);
@@ -112,6 +130,7 @@ public class ChooseDateActivity extends Activity {
 				}
 			})
 			.setView(timePickerView);
+		builder.show();
 
 	}
 	
@@ -132,14 +151,12 @@ public class ChooseDateActivity extends Activity {
 
 		@Override
 		public void add(Date object) {
-			//objects.add(object);
 			Log.d("Calendar", "Added date " +object.toString());
 			super.add(object);
 		}
 
 		@Override
 		public void remove(Date object) {
-			//objects.remove(object);
 			super.remove(object);
 		}
 
