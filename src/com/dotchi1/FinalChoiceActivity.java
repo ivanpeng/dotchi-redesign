@@ -40,7 +40,7 @@ public class FinalChoiceActivity extends ActionBarActivity {
 		LiteImageLoader imageLoader = new LiteImageLoader(this);
 		choices =(ArrayList<VoteItem>) data.getSerializableExtra("choices"); 
 		adapter = new VoteItemAdapter(this, R.layout.final_choice_item, choices, imageLoader);
-		gridView.setAdapter(adapter);
+		//gridView.setAdapter(adapter);
 		gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 

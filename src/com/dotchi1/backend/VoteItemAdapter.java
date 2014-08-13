@@ -4,10 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,7 +22,7 @@ import de.passsy.holocircularprogressbar.HoloCircularProgressBar;
  * @author Ivan
  *
  */
-public class VoteItemAdapter extends ArrayAdapter<VoteItem>	{
+public class VoteItemAdapter extends ViewPagerAdapter	{
 
 	private static final int VOTE_ITEM_ADAPTER_IMAGE_SIZE = 150;
 	
@@ -33,7 +32,7 @@ public class VoteItemAdapter extends ArrayAdapter<VoteItem>	{
 	
 	public VoteItemAdapter(Context context, int textViewResourceId,
 			List<VoteItem> objects, LiteImageLoader imageLoader) {
-		super(context, textViewResourceId, objects);
+		//super(context, textViewResourceId, objects);
 		this.context = context;
 		this.objects = new ArrayList<VoteItem>(objects);
 		this.imageLoader = imageLoader;
@@ -45,11 +44,11 @@ public class VoteItemAdapter extends ArrayAdapter<VoteItem>	{
 	}
 
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(int position, ViewPager pager) {
 		View view = null;
 		if (view == null)	{
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			view = inflater.inflate(R.layout.photo_roll_item, parent, false);
+			view = inflater.inflate(R.layout.photo_roll_item, null);
 		}
 		VoteItem vItem = objects.get(position);
 		// Populate
@@ -78,5 +77,7 @@ public class VoteItemAdapter extends ArrayAdapter<VoteItem>	{
 		voteCount.setText(String.valueOf(vItem.getVotes()) + " 票");
 		return view;
 	}
+
+
 
 }

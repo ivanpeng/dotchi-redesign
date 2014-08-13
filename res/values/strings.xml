@@ -35,5 +35,6 @@
     <string name="title_activity_show_list">ShowListActivity</string>
     <string name="title_activity_make_group">MakeGroupActivity</string>
     <string name="title_activity_final_choice">FinalChoiceActivity</string>
+    <string name="title_activity_choose_date">ChooseDateActivity</string>
 
 </resources>

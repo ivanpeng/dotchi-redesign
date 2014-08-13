@@ -17,6 +17,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -182,7 +183,7 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 		holder.timeRemainingView = (TextView) view.findViewById(R.id.new_feed_end_time);
 		holder.descriptionView = (TextView) view.findViewById(R.id.new_feed_description);
 		holder.keyView = view.findViewById(R.id.new_feed_is_secret_image);
-		holder.photoRoll = (HorizontalListView) view.findViewById(R.id.photo_roll_list);
+		holder.photoRoll = (ViewPager) view.findViewById(R.id.photo_roll_list);
 		holder.notifyImage = (ImageView) view.findViewById(R.id.mail_notification);
 		holder.endTimeProgressBar = (HoloCircularProgressBar) view.findViewById(R.id.new_feed_progress);
 		holder.moodLayout = (RelativeLayout) view.findViewById(R.id.new_feed_like_button);
@@ -228,19 +229,19 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 			VoteItemAdapter viAdapter = new VoteItemAdapter(context, R.layout.photo_roll_item, item.getVoteItem(), imageLoader);
 			holder.photoRoll.setVisibility(View.VISIBLE);
 			emptyPhotoRoll.setVisibility(View.INVISIBLE);
-			holder.photoRoll.setSnappingToCenter(true);
+			//holder.photoRoll.setSnappingToCenter(true);
 			holder.photoRoll.setAdapter(viAdapter);
-			// onItemClick?
-			holder.photoRoll.setOnItemClickListener(new OnItemClickListener() {
-				
-				@Override
-				public void onItemClick(AdapterView<?> parent, View v,
-						int position, long id) {
-					Intent intent = new Intent(context, EventChoicesActivity.class);
-					intent.putExtra("vote_items", new ArrayList<VoteItem>(item.getVoteItem()));
-					context.startActivity(intent);
-				}
-			});
+			// onItemClick needs to be moved to the vote item adapter, as it shouldn't have this
+//			holder.photoRoll.setOnItemClickListener(new OnItemClickListener() {
+//				
+//				@Override
+//				public void onItemClick(AdapterView<?> parent, View v,
+//						int position, long id) {
+//					Intent intent = new Intent(context, EventChoicesActivity.class);
+//					intent.putExtra("vote_items", new ArrayList<VoteItem>(item.getVoteItem()));
+//					context.startActivity(intent);
+//				}
+//			});
 		} else	{
 			holder.photoRoll.setVisibility(View.INVISIBLE);
 			emptyPhotoRoll.setVisibility(View.VISIBLE);
@@ -606,7 +607,7 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 		TextView timeRemainingView;
 		TextView descriptionView;
 		View keyView;
-		HorizontalListView photoRoll;
+		ViewPager photoRoll;
 		HorizontalListView moodListView;
 		ImageView notifyImage;
 		HoloCircularProgressBar endTimeProgressBar;

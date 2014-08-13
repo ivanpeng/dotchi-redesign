@@ -50,6 +50,7 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 	private EditText title;
 	private ImageView searchButton;
 	private ToggleButton addToFavouritesButton;
+	private ImageView dateButton;
 	
 	private HorizontalListView packageItemView;
 	private DotchiPackageItemAdapter adapter;
@@ -83,6 +84,8 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 		searchButton = (ImageView) selfChoiceRootView.findViewById(R.id.invite_self_choice_search_button);
 		emptyView = selfChoiceRootView.findViewById(R.id.photo_container_empty_view);
 		addToFavouritesButton = (ToggleButton) selfChoiceRootView.findViewById(R.id.add_to_favourites);
+		dateButton = (ImageView) selfChoiceRootView.findViewById(R.id.select_dates_button);
+		
 		
 		packageItemView = (HorizontalListView) selfChoiceRootView.findViewById(R.id.photo_select_container);
 		packageItemView.setSnappingToCenter(true);
@@ -94,6 +97,7 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 		addItemButton.setOnClickListener(this);
 		backButton.setOnClickListener(this);
 		searchButton.setOnClickListener(this);
+		dateButton.setOnClickListener(this);
 		addToFavouritesButton.setOnCheckedChangeListener(this);
 		
 		packageItemView.setOnItemClickListener(new OnItemClickListener() {
@@ -267,7 +271,15 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 			// push list to end, and then add a blank template
 			addBlankItem();
 			break;
+		case R.id.select_dates_button:
+			// Go to Date Select page;
+			selectDates();
 		}
+	}
+
+	private void selectDates() {
+		Intent intent = new Intent(getActivity(), ChooseDateActivity.class);
+		startActivity(intent);
 	}
 
 	@Override

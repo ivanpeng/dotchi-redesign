@@ -161,20 +161,19 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 		Point p = new Point();
 		d.getSize(p);
 		screenWidth = p.x;
-	   	slidingMenu = new SlidingMenu(this);
-	   	slidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
-	   	slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-	   	slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-        slidingMenu.setShadowDrawable(R.drawable.shadow);
-        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        slidingMenu.setFadeDegree(0.35f);
-	   	slidingMenu.setMenu(R.layout.activity_test);
-	   	slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+//	   	slidingMenu = new SlidingMenu(this);
+//	   	slidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
+//	   	slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+//	   	slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+//        slidingMenu.setShadowDrawable(R.drawable.shadow);
+//        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+//        slidingMenu.setFadeDegree(0.35f);
+//	   	slidingMenu.setMenu(R.layout.activity_test);
+//	   	slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 	   	friendLayout = inflater.inflate(R.layout.new_friend_list, null);
 	   	expandableListView = (ExpandableListView) friendLayout.findViewById(R.id.new_friends_list);
 		numSelectedView = (TextView) friendLayout.findViewById(R.id.friend_selected_count);
-	   	//slidingMenu.setSecondaryMenu(friendLayout);
-	   	slidingMenu.setSecondaryMenu(R.layout.new_friend_list);
+//	   	slidingMenu.setSecondaryMenu(R.layout.new_friend_list);
 
 //	   	swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
 //	   	swipeLayout.setOnRefreshListener(this);
@@ -630,7 +629,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 					
 				}
 			});
-			slidingMenu.setSecondaryMenu(friendLayout);
+			//slidingMenu.setSecondaryMenu(friendLayout);
 			expandableListView.setOnChildClickListener(new OnChildClickListener() {
 				@Override
 				public boolean onChildClick(ExpandableListView parent, final View v,

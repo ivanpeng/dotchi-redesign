@@ -134,6 +134,10 @@
             android:name="com.dotchi1.FinalChoiceActivity"
             android:label="@string/title_activity_final_choice" >
         </activity>
+        <activity
+            android:name="com.dotchi1.ChooseDateActivity"
+            android:label="@string/title_activity_choose_date" >
+        </activity>
     </application>
 
 </manifest>

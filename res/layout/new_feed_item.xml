@@ -25,7 +25,7 @@
 	            android:scaleType="fitXY"
 	            android:src="@drawable/new_feed_photo_default"
 	            android:visibility="invisible" />
-	        <com.devsmart.android.ui.HorizontalListView
+	        <android.support.v4.view.ViewPager
 	            android:id="@+id/photo_roll_list"
 	            android:layout_width="match_parent"
 	            android:layout_height="match_parent"
