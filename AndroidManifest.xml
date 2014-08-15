@@ -138,6 +138,10 @@
             android:name="com.dotchi1.ChooseDateActivity"
             android:label="@string/title_activity_choose_date" >
         </activity>
+        <activity
+            android:name="com.dotchi1.CreateGameFirstActivity"
+            android:label="@string/title_activity_create_game_first" >
+        </activity>
     </application>
 
 </manifest>

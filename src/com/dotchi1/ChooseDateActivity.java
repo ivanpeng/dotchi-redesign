@@ -5,15 +5,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.TimePickerDialog;
-import android.app.AlertDialog.Builder;
-import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,7 @@ import com.squareup.timessquare.CalendarPickerView;
 import com.squareup.timessquare.CalendarPickerView.OnDateSelectedListener;
 import com.squareup.timessquare.CalendarPickerView.SelectionMode;
 
-public class ChooseDateActivity extends Activity {
+public class ChooseDateActivity extends ActionBarActivity implements OnClickListener {
 	private CalendarPickerView calendar;
 	private ListView dateListView;
 	private ArrayList<Date> dates = new ArrayList<Date>();
@@ -44,6 +43,36 @@ public class ChooseDateActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_choose_date);
+		LayoutInflater inflater = getLayoutInflater();
+		View actionbar = inflater.inflate(R.layout.menu_choose_date, null);
+		TextView menuTitle = (TextView)actionbar.findViewById(R.id.menu_title);
+		menuTitle.setText("Choose Dates");
+		Button nextStep = (Button) actionbar.findViewById(R.id.complete_button);
+		nextStep.setVisibility(View.VISIBLE);
+		nextStep.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Package dates and send back to original activity
+				Intent returnIntent = new Intent();
+				// Before we set dates, we process for extra times.
+				ArrayList<Date> processedDates = removeDuplicateDates(dates);
+				returnIntent.putExtra("dates", processedDates);
+				setResult(RESULT_OK, returnIntent);
+				finish();
+			}
+		});
+		
+		ImageView backButton = (ImageView) actionbar.findViewById(R.id.menu_back);
+		backButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
+		getSupportActionBar().setCustomView(actionbar);
+	    getSupportActionBar().setDisplayShowTitleEnabled(false);
+	    getSupportActionBar().setDisplayShowCustomEnabled(true);
+	   	getSupportActionBar().setDisplayShowHomeEnabled(false);
 		
 		dateListView = (ListView) findViewById(R.id.selected_dates_list);
 		
@@ -61,16 +90,15 @@ public class ChooseDateActivity extends Activity {
 			
 			@Override
 			public void onDateUnselected(Date date) {
-				int datesRemoved = 0;
-				for (int i = 0; i < dates.size(); i ++)	{
-					Date d = dates.get(i);
-					if (isSameDay(date, d))	{
-						dates.remove(date);
-						adapter.notifyDataSetChanged();
-						datesRemoved++;
-					}
+				Log.d("Calendar", "Before removing dates, list is "  + dates.toString());
+				Iterator<Date> itr = dates.iterator();
+				while (itr.hasNext())	{
+					Date d = itr.next();
+					if (isSameDay(date, d))
+						itr.remove();
 				}
-				Log.d("Calendar", "Number of dates removed: " + datesRemoved);
+				adapter.notifyDataSetChanged();
+				Log.d("Calendar", "Dates after: " + dates.toString());
 			}
 			
 			@Override
@@ -84,18 +112,27 @@ public class ChooseDateActivity extends Activity {
 				}
 			}
 		});
+		
+		// Button now to add all
+		Button removeAll = (Button) findViewById(R.id.remove_all_times);
+		removeAll.setOnClickListener(this);
+		Button addAll = (Button) findViewById(R.id.add_times_to_all);
+		addAll.setOnClickListener(this);
+		
+		
 	}
 	
 	// This checks if the dates are the same (not necessarily the time)
 	protected boolean isSameDay(Date d1, Date d2)	{
-		Log.d("Calendar", "Comparing " + d1.toString() + " and " + d2.toString());
 		Calendar c1 = Calendar.getInstance(), c2 = Calendar.getInstance();
 		c1.setTime(d1);
 		c2.setTime(d2);
+		boolean v;
 		if (c1.get(Calendar.DAY_OF_YEAR) == c2.get(Calendar.DAY_OF_YEAR) && c1.get(Calendar.YEAR) == c2.get(Calendar.YEAR))
-			return true;
+			 v = true;
 		else
-			return false;
+			v = false;
+		return v;
 	}
 	
 	protected void chooseTimeDialog(final Date date)	{
@@ -132,6 +169,87 @@ public class ChooseDateActivity extends Activity {
 			.setView(timePickerView);
 		builder.show();
 
+	}
+	
+	protected void addAllDialog(){
+		// Similar to chooseTimeDialog, except different onClickListener
+		final Calendar cal = Calendar.getInstance();
+		
+		final TimePicker timePickerView = (TimePicker) getLayoutInflater().inflate(R.layout.time_picker_layout, null);
+		timePickerView.setIs24HourView(false);
+		timePickerView.setCurrentHour(cal.get(Calendar.HOUR));
+		timePickerView.setCurrentMinute(cal.get(Calendar.MINUTE));
+		
+		// This function opens up a dialog and creates a date
+		AlertDialog.Builder builder = new AlertDialog.Builder(this)
+			.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					ArrayList<Date> newDates = new ArrayList<Date>();
+					for (Date date: dates)	{
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(date);
+						// Only if the time is set to be 00:00 will we add
+						if (cal.get(Calendar.HOUR) == 0 && cal.get(Calendar.MINUTE) == 0)	{
+							cal.set(Calendar.HOUR, timePickerView.getCurrentHour());
+							cal.set(Calendar.MINUTE, timePickerView.getCurrentMinute());
+							newDates.add(cal.getTime());
+						}
+					}
+					dates.addAll(newDates);
+					Log.d("Calendar", "Added " + newDates.toString());
+					adapter.notifyDataSetChanged();
+				}
+			})
+			.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+				
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					dialog.dismiss();
+				}
+			})
+			.setView(timePickerView);
+		builder.show();
+	}
+	
+	protected ArrayList<Date> removeDuplicateDates(ArrayList<Date> unprocessedDates)	{
+		Log.d("Process dates", "Input is " + unprocessedDates.toString());
+		ArrayList<Date> processedDates = new ArrayList<Date>();
+		int i = 0;
+		while (i < unprocessedDates.size()-1){
+			int j = i+1;
+			if (!isSameDay(unprocessedDates.get(i), unprocessedDates.get(j)))	{
+				// First iteration; if it is the first iteration, we just add the ith date
+				processedDates.add(unprocessedDates.get(i));
+				// Need to do a special check for last items. If we're comparing last items, add the last item as well.
+				
+			}
+			else	{
+				// Multiple dates; we're adding everything except the first one
+				while (j < unprocessedDates.size()-1 && isSameDay(unprocessedDates.get(i), unprocessedDates.get(j))) {
+					// Add to new list
+					processedDates.add(unprocessedDates.get(j));
+					j++;
+				} 
+			}
+			if (j == unprocessedDates.size()-1)
+				processedDates.add(unprocessedDates.get(j));
+			i = j;
+		}
+		return processedDates;
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId())	{
+		case R.id.remove_all_times:
+			// Nothing yet
+			break;
+		case R.id.add_times_to_all:
+			Log.d("ChooseDateActivity", "Picked up add all button press");
+			addAllDialog();
+			break;
+		}
 	}
 	
 	class CalendarAdapter extends ArrayAdapter<Date>	{
@@ -212,5 +330,6 @@ public class ChooseDateActivity extends Activity {
 		
 		
 	}
+
 
 }

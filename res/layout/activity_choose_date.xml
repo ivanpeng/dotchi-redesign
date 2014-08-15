@@ -10,6 +10,29 @@
         android:layout_width="match_parent"
         android:layout_height="340dp" />
     
+    <RelativeLayout 
+        android:layout_width="match_parent"
+        android:layout_height="45dp" >
+
+        <Button
+            android:id="@+id/add_times_to_all"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="5dp"
+            android:text="Add all" />
+
+        <Button
+            android:id="@+id/remove_all_times"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/add_times_to_all"
+            android:text="Remove All" />
+        
+    </RelativeLayout>"
+    
     <ListView
         android:id="@+id/selected_dates_list"
         android:layout_width="match_parent"

@@ -683,7 +683,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 				
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(NewMainActivity.this, NewInviteActivity.class);
+					Intent intent = new Intent(NewMainActivity.this, CreateGameFirstActivity.class);
 					intent.putExtra("is_friend_data", false);
 					Bundle bundle = new Bundle();
 					bundle.putParcelableArrayList("friends", new ArrayList<FriendPageFriendItem>(l));

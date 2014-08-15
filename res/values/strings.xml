@@ -36,5 +36,8 @@
     <string name="title_activity_make_group">MakeGroupActivity</string>
     <string name="title_activity_final_choice">FinalChoiceActivity</string>
     <string name="title_activity_choose_date">ChooseDateActivity</string>
+    <string name="title_activity_create_game_first">CreateGameFirstActivity</string>
 
+    
+    <string name="date_selection_prompt">Select date selection type</string>
 </resources>
