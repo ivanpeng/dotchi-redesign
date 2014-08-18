@@ -15,16 +15,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -37,7 +38,6 @@ import android.widget.TextView;
 import com.devsmart.android.ui.HorizontalListView;
 import com.dotchi1.CommentActivity;
 import com.dotchi1.CommentActivity.MoodAdapter;
-import com.dotchi1.EventChoicesActivity;
 import com.dotchi1.FinalChoiceActivity;
 import com.dotchi1.GameActivity;
 import com.dotchi1.NewMainActivity;
@@ -177,6 +177,15 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 	}
 
 	public static ViewHolder initHolder(View view)	{
+		if (imageLoader == null)	{
+			imageLoader = new LiteImageLoader(view.getContext());
+		}
+		if (screenWidth == 0)	{
+			Display d = ((Activity)view.getContext()).getWindowManager().getDefaultDisplay();
+			Point p = new Point();
+			d.getSize(p);
+			screenWidth = p.x;
+		}
 		ViewHolder holder = new ViewHolder();
 		holder.profilePicture = (ImageView) view.findViewById(R.id.new_feed_image);
 		holder.title = (TextView) view.findViewById(R.id.new_feed_event_title);
@@ -231,17 +240,7 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 			emptyPhotoRoll.setVisibility(View.INVISIBLE);
 			//holder.photoRoll.setSnappingToCenter(true);
 			holder.photoRoll.setAdapter(viAdapter);
-			// onItemClick needs to be moved to the vote item adapter, as it shouldn't have this
-//			holder.photoRoll.setOnItemClickListener(new OnItemClickListener() {
-//				
-//				@Override
-//				public void onItemClick(AdapterView<?> parent, View v,
-//						int position, long id) {
-//					Intent intent = new Intent(context, EventChoicesActivity.class);
-//					intent.putExtra("vote_items", new ArrayList<VoteItem>(item.getVoteItem()));
-//					context.startActivity(intent);
-//				}
-//			});
+
 		} else	{
 			holder.photoRoll.setVisibility(View.INVISIBLE);
 			emptyPhotoRoll.setVisibility(View.VISIBLE);

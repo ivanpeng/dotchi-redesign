@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res/com.dotchi1"
+    android:layout_width="match_parent"
+    android:layout_height="250dp" >
+    
+    <!-- Main feed page first -->
+    <RelativeLayout 
+        android:id="@+id/image_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        
+        <ImageView 
+            android:id="@+id/top_picture"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:scaleType="centerCrop"
+            android:background="@color/black"
+            android:src="@drawable/new_feed_photo_default"/>
+        
+        <LinearLayout
+            android:id="@+id/image_details_layout"
+          	android:layout_width="300dp"
+          	android:layout_height="200dp"
+          	android:orientation="vertical"
+          	android:gravity="center"
+          	android:layout_centerInParent="true" >
+            
+            <TextView
+                android:id="@+id/feed_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="Title" />
+            <TextView
+                android:id="@+id/number_of_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="10 friends invited" />
+            <TextView
+                android:id="@+id/date_posted"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="posted 0 days ago" />
+        </LinearLayout>
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:id="@+id/on_click_layout"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:visibility="gone" >
+        
+        <ImageView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+        	android:background="@drawable/new_friend_list_background"
+        	android:alpha="0.7" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:paddingRight="30dp"
+            android:paddingLeft="30dp"
+            android:layout_centerVertical="true" >
+	        <Button
+	            android:id="@+id/comment_button"
+	            android:layout_width="0dp"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:textSize="14sp"
+	            android:text="Comment" />
+	        <Button
+	            android:id="@+id/play_button"
+	            android:layout_width="0dp"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:textSize="14sp"
+	            android:text="Play" />
+	        <Button 
+	            android:id="@+id/details_button"
+	            android:layout_width="0dp"
+	            android:layout_height="match_parent"
+	            android:layout_weight="1"
+	            android:textSize="14sp"
+	            android:text="Details"/>
+        </LinearLayout>
+
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="-10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true" >
+
+        <de.passsy.holocircularprogressbar.HoloCircularProgressBar
+            android:id="@+id/new_feed_progress"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            app:marker_visible="false"
+            app:progress_background_color="@color/white"
+            app:progress_color="@color/white"
+            app:stroke_width="4dp"
+            app:thumb_visible="false" />
+
+        <com.dotchi1.view.RoundedImageView
+            android:id="@+id/main_feed_head"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            android:padding="3dp"
+            android:src="@drawable/default_profile_pic" />
+    </RelativeLayout>
+
+</RelativeLayout>

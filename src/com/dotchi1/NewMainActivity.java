@@ -25,7 +25,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
 import android.text.Editable;
@@ -42,6 +41,8 @@ import android.view.ViewTreeObserver;
 import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
@@ -50,13 +51,14 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.dotchi1.backend.ExpandableListAdapter;
-import com.dotchi1.backend.NewFeedAdapter;
+import com.dotchi1.backend.MainFeedAdapter;
 import com.dotchi1.backend.PostUrlTask;
-import com.dotchi1.backend.ViewUtils;
+import com.dotchi1.image.LiteImageLoader;
 import com.dotchi1.model.BaseFeedData;
 import com.dotchi1.model.FriendPageFriendItem;
 import com.dotchi1.model.FriendPageGroupItem;
@@ -99,7 +101,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 	private TranslateAnimation anim;
 	
 	private boolean isFriendState = false;
-	private NewFeedAdapter adapter;
+	private MainFeedAdapter adapter;
 	private ArrayList<BaseFeedData> feedData;
 	
 	static final int GROUP_KEY = 0;
@@ -478,10 +480,42 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 				// Now call process and set adapter
 				feedData = processJson(result);
 				if (feedData != null && feedData.size() > 0)	{
-					adapter = new NewFeedAdapter(NewMainActivity.this, R.layout.new_feed_item, feedData, screenWidth);
+					//adapter = new NewFeedAdapter(NewMainActivity.this, R.layout.new_feed_item, feedData, screenWidth);
+					adapter = new MainFeedAdapter(NewMainActivity.this, 0, feedData, new LiteImageLoader(getApplicationContext()));
 					listView.setAdapter(adapter);
 					listView.addHeaderView(mHeader);
+					//Set OnItemClickListener
+					listView.setOnItemClickListener(new OnItemClickListener() {
 
+						@Override
+						public void onItemClick(AdapterView<?> parent, View view,
+								int position, long id) {
+							RelativeLayout imageLayout = (RelativeLayout) view.findViewById(R.id.image_layout);
+							final RelativeLayout onClickLayout = (RelativeLayout) view.findViewById(R.id.on_click_layout);
+							final LinearLayout imageDetailsLayout = (LinearLayout) view.findViewById(R.id.image_details_layout);
+							view.setSelected(!view.isSelected());
+							if (view.isSelected())	{
+								// add mask, disappear textView Layout
+								onClickLayout.setVisibility(View.VISIBLE);
+								imageDetailsLayout.setVisibility(View.GONE);
+								Log.d(TAG, "Item View Selected");
+								onClickLayout.setOnClickListener(new OnClickListener() {
+									
+									@Override
+									public void onClick(View v) {
+										v.setSelected(false);
+										onClickLayout.setVisibility(View.GONE);
+										imageDetailsLayout.setVisibility(View.VISIBLE);
+									}
+								});
+							} else	{
+								onClickLayout.setVisibility(View.GONE);
+								imageDetailsLayout.setVisibility(View.VISIBLE);
+								Log.d(TAG, "Item View unselected");
+							}
+						}
+					});
+					
 					setListView();
 /*					listView.setOnScrollListener(new OnScrollListener() {
 						

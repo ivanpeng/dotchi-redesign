@@ -40,8 +40,6 @@
 		        android:layout_height="@dimen/placeholder_height"
 		        android:orientation="vertical">
 		        
-			    <include layout="@layout/search_bar"
-			    	android:id="@+id/new_feed_search_bar" />
 			    <LinearLayout
 			        android:layout_width="match_parent"
 			        android:layout_height="37dp"
