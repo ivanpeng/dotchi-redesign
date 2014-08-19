@@ -6,32 +6,115 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class CreateGameFirstActivity extends Activity {
+public class CreateGameFirstActivity extends ActionBarActivity implements OnCheckedChangeListener{
 
 	public static final int GET_DATES_REQ_CODE = 10;
 	
+	// Arrange Meeting views
 	private TextView singleDateSelectView;
 	private ListView multipleDateSelectView;
+	
+	// Vote Views
+	private TextView voteLimitView;
+	private TextView replyDayView;
+	
+	// Variables
+	private boolean isSecret;
+	private boolean isPersonal;
+	private boolean isOfficial = false;
+	private String gameTitle = "";
+	private String voteLimit = "0";
+	private String replyDay = "15";
+	private String dotchiType = "0";
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_game_first);
+		// Set up actionbar layout
+		View actionbar = setupActionBar();
+		getSupportActionBar().setCustomView(actionbar);
+		getSupportActionBar().setDisplayShowTitleEnabled(false);
+		getSupportActionBar().setDisplayShowCustomEnabled(true);
+		getSupportActionBar().setDisplayShowHomeEnabled(false);
 		
+		// Before we continue, set which view is visible, and which view is gone\
+		Intent lastIntent = getIntent();
+		dotchiType = lastIntent.getStringExtra("dotchiType");
+		View arrangeMeetingLayout = findViewById(R.id.arrange_meeting_layout);
+		View voteLayout = findViewById(R.id.vote_layout);
+		if ("1".equals(dotchiType))	{
+			// find arrange meeting layout, set that to gone, then set vote layout up.
+			arrangeMeetingLayout.setVisibility(View.GONE);
+			setupVoteLayout();
+		} else	{
+			// vote layout gone, arrange meeting set
+			voteLayout.setVisibility(View.GONE);
+			setupArrangeMeetingLayout();
+		}
+		
+	}
+
+	protected View setupActionBar()	{
+
+		LayoutInflater inflater = getLayoutInflater();
+		View actionbar = inflater.inflate(R.layout.menu_dotchi_package, null);
+		ImageButton back = (ImageButton)actionbar.findViewById(R.id.back_home_button);
+		back.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
+		TextView packageTitleView = (TextView) actionbar.findViewById(R.id.package_title);
+		packageTitleView.setText("Create Game");
+		ImageButton forwardButton = (ImageButton) actionbar.findViewById(R.id.forward_button);
+		forwardButton.setVisibility(View.VISIBLE);
+		forwardButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO
+				// If it's vote type, then before sending data forward, we grab the text values first;
+				if (dotchiType.equals("1"))	{
+					replyDay = (replyDayView.getText() != null && replyDayView.getText().length() >  0) ? "15": replyDayView.getText().toString();
+					voteLimit = (voteLimitView.getText() != null && voteLimitView.getText().length() > 0) ? "0": voteLimitView.getText().toString();
+				}
+				// Bundle up, and then send to next step
+				Bundle bundle = bundleGameArgs();
+				Intent intent = new Intent(CreateGameFirstActivity.this, CreateGameItemsActivity.class);
+				intent.putExtras(bundle);
+				startActivity(intent);
+			}
+		});	    
+		return actionbar;
+	}
+	
+	protected void setupArrangeMeetingLayout()	{
+		// First, preset values because we're in arrange meeting
+		isPersonal = true;
+		isSecret = false;
+		voteLimit = "0";
+		replyDay = "15";
 		List<String> objects = new ArrayList<String>();
 		objects.add("Select Single Date");
 		objects.add("Have user select");
@@ -58,7 +141,7 @@ public class CreateGameFirstActivity extends Activity {
 					// Select single date
 					multipleDateSelectView.setVisibility(View.GONE);
 					// Show alert dialog 
-				} else	{
+				} else if (position == 1){
 					singleDateSelectView.setText("Selected Dates: ");
 					multipleDateSelectView.setVisibility(View.VISIBLE);
 					// Open multiple activities
@@ -72,9 +155,46 @@ public class CreateGameFirstActivity extends Activity {
 			}
 		});
 		
+		// 
+	}
+	
+	protected void setupVoteLayout()	{
+		CheckBox isSecretBox = (CheckBox) findViewById(R.id.is_secret_box);
+		isSecretBox.setOnCheckedChangeListener(this);
+		CheckBox isPersonalBox = (CheckBox) findViewById(R.id.is_personal_box);
+		isPersonalBox.setOnCheckedChangeListener(this);
+		
+		voteLimitView = (TextView) findViewById(R.id.vote_limit_text_box);
+		replyDayView = (TextView) findViewById(R.id.day_limit_text_box);
+		
+	}
+	
+	protected Bundle bundleGameArgs()	{
+		String dotchiId = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE).getString("DOTCHI_ID", "0");
+		
+		Bundle bundle = new Bundle();
+		bundle.putBoolean("is_personal", isPersonal);
+		bundle.putBoolean("is_official", isOfficial);
+		bundle.putString("vote_limit", voteLimit);
+		bundle.putString("reply_day", replyDay);
+		bundle.putString("dotchi_type", dotchiType);
+		bundle.putString("game_title", gameTitle);
+		bundle.putString("dotchi_id", dotchiId);
+		return bundle;
 	}
 
-
+	@Override
+	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+		switch(buttonView.getId())	{
+		case R.id.is_personal_box:
+			isPersonal = isChecked;
+			break;
+		case R.id.is_secret_box:
+			isSecret = isChecked;
+			break;
+		}
+	}
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == GET_DATES_REQ_CODE)	{

@@ -17,8 +17,6 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.devsmart.android.ui.HorizontalListView;
 import com.dotchi1.backend.NewFeedAdapter;
 import com.dotchi1.backend.NewFeedAdapter.ViewHolder;
 import com.dotchi1.backend.PostUrlTask;
@@ -44,7 +41,6 @@ import com.dotchi1.backend.ViewUtils;
 import com.dotchi1.image.LiteImageLoader;
 import com.dotchi1.model.BaseFeedData;
 import com.dotchi1.model.CommentItem;
-import com.dotchi1.model.MoodItem;
 import com.dotchi1.view.RoundedImageView;
 
 public class CommentActivity extends Activity {
@@ -56,7 +52,6 @@ public class CommentActivity extends Activity {
 	LiteImageLoader imageLoader;
 	ListView commentList;
 	CommentAdapter adapter;
-	HorizontalListView moodListView;
 	
 	String userName;
 	String headImage;
@@ -93,7 +88,7 @@ public class CommentActivity extends Activity {
 		final String rootUrl = getResources().getString(R.string.api_test_root_url);
 		Intent intent = getIntent();
 		final BaseFeedData item = (BaseFeedData)intent.getSerializableExtra("item");
-		final String dotchiId = intent.getStringExtra("dotchi_id");
+		final String dotchiId = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE).getString("DOTCHI_ID",  "0");
 		// Before we proceed with inflating stuff, we need to get a task;
 		//TODO: Migrate this to Login/MainActivity, and then store in DB
 		new PostUrlTask(){
@@ -112,15 +107,7 @@ public class CommentActivity extends Activity {
 		final View view = inflater.inflate(R.layout.comment_header, null, false);
 		final ViewHolder holder = NewFeedAdapter.initHolder(view);
 		NewFeedAdapter.populateView(view, this, holder, item, true);
-		moodListView = (HorizontalListView)view.findViewById(R.id.mood_list);
 		
-		// Now call getMoodTask for each feedData
-		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
-			// Execute on Executor
-			new GetMoodTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootUrl + "/mood/get_mood", "game_id", String.valueOf(item.getGameId()));
-		} else	{
-			new GetMoodTask().execute(rootUrl + "/mood/get_mood", "game_id", String.valueOf(item.getGameId()));
-		}
 		// Populate ListView
 		commentList = (ListView) findViewById(R.id.comment_list);
 		
@@ -165,7 +152,7 @@ public class CommentActivity extends Activity {
 				if (comment != null && comment.length() > 0)	{
 					Date date = new Date();
 					SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd hh:mm");
-					final CommentItem commentItem = new CommentItem(item.getHeadImage(), item.getUserName(), sdf.format(date), comment);
+					final CommentItem commentItem = new CommentItem(headImage, userName, sdf.format(date), comment);
 					// Not null! Call submit comment API
 					new PostUrlTask(){
 
@@ -181,7 +168,6 @@ public class CommentActivity extends Activity {
 								if (status.equals("success"))	{
 									// update list
 									isCommentAdded = true;
-									NewFeedAdapter.manageCommentLayout(true, item, holder);
 									if (adapter.isPlaceholder){
 										// reinitialize adapter with comment as first, and don't make it
 										List<CommentItem> ll = new ArrayList<CommentItem>();
@@ -193,8 +179,6 @@ public class CommentActivity extends Activity {
 										//TODO: confer with API the order of how they are presented; newest comments on top or bottom?
 										adapter.add(commentItem);
 										// Change textView!
-										TextView commentCount = (TextView) view.findViewById(R.id.num_comments);
-										commentCount.setText(String.valueOf(adapter.getCount()));
 										adapter.notifyDataSetChanged();
 									}
 								}
@@ -344,74 +328,6 @@ public class CommentActivity extends Activity {
 		
 	}
 	
-	class GetMoodTask extends PostUrlTask	{
 
-
-		@Override
-		protected void onPostExecute(String result) {
-			result = processResult(result);
-			try {
-				JSONArray ja = new JSONObject(result).getJSONArray("data");
-				List<MoodItem> data = new ArrayList<MoodItem>();
-				for (int i = 0; i < ja.length(); i++){
-					JSONObject jo = ja.getJSONObject(i);
-					// Add to 
-					MoodItem mItem = new MoodItem(jo.getString("head_image"), jo.getString("user_name"), jo.getInt("mood_type_id"));
-					data.add(mItem);
-				}
-				if (data.size() > 0)	{
-					MoodAdapter moodAdapter = new MoodAdapter(CommentActivity.this, R.layout.mood_layout, data);
-					moodListView.setAdapter(moodAdapter);
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-
-	
-	
-	public static class MoodAdapter extends ArrayAdapter<MoodItem>	{
-
-		private Context context;
-		private ArrayList<MoodItem> objects;
-		private LiteImageLoader imageLoader;
-		private static final int[] moodArr = {R.drawable.mood_1, R.drawable.mood_2, R.drawable.mood_3, R.drawable.mood_4};
-
-		
-		public MoodAdapter(Context context, int textViewResourceId,	List<MoodItem> objects) {
-			super(context, textViewResourceId, objects);
-			this.context = context;
-			this.objects = new ArrayList<MoodItem>(objects);
-			this.imageLoader = new LiteImageLoader(context);
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View view = convertView;
-			MoodItem mItem = objects.get(position);
-			if (view == null)	{
-				LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-				view = inflater.inflate(R.layout.mood_layout, null);
-			}
-			RoundedImageView head = (RoundedImageView) view.findViewById(R.id.head_picture);
-			imageLoader.DisplayImage(mItem.getHeadImage(), R.drawable.default_profile_pic, head, COMMENT_ACTIVITY_IMAGE_SIZE);
-			ImageView mood = (ImageView) view.findViewById(R.id.mood_picture);
-			mood.setImageResource(moodArr[mItem.getMoodTypeId()-1]);
-			return view;
-		}
-
-		@Override
-		public void add(MoodItem object) {
-			objects.add(object);
-			super.add(object);
-		}
-
-		@Override
-		public int getCount() {
-			return objects.size();
-		}
-		
-	}
 
 }

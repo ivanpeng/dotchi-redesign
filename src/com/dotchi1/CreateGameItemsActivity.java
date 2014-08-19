@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -30,22 +29,16 @@ import android.widget.ToggleButton;
 
 import com.devsmart.android.ui.HorizontalListView;
 import com.devsmart.android.ui.HorizontalListView.OnCenteredListener;
+import com.dotchi1.NewInviteSelfChoiceFragment.OnGameItemSetListener;
 import com.dotchi1.backend.PostUrlTask;
 import com.dotchi1.image.LiteImageLoader;
-/**
- * 
- * This serves as both a fill-in and a template for adding values from favourite + dotchi packages
- * @author Ivan
- *
- */
-public class NewInviteSelfChoiceFragment extends Fragment implements OnClickListener, OnCenteredListener, OnCheckedChangeListener{
+
+public class CreateGameItemsActivity extends Activity implements OnClickListener, OnCenteredListener, OnCheckedChangeListener {
 
 	public static final String TAG = "NewInviteSelfChoiceFragment";
 	public static final int CHOOSE_PHOTO = 100;
 	
-	private Button backButton;
 	private ImageButton addItemButton;
-	private OnGameItemSetListener mOnGameSetListener;
 	
 	private EditText title;
 	private ImageView searchButton;
@@ -58,43 +51,26 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 	private View emptyView;
 	
 	private boolean isSavePackage = false;
-	private PostUrlTask dotchiPackageTask = null;
 	
-	public interface OnGameItemSetListener	{
-		public void onGameItemSet(ArrayList<JSONObject> gameItems, boolean isSavePackage);
-	}
-	
-	
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		mOnGameSetListener = (OnGameItemSetListener) activity;
-	}
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-		View selfChoiceRootView = inflater.inflate(R.layout.fragment_new_invite_self_choice, container, false);
-		title = (EditText) selfChoiceRootView.findViewById(R.id.invite_self_choice_search_text);
-		backButton = (Button) selfChoiceRootView.findViewById(R.id.new_invite_back_to_index_button);
-		searchButton = (ImageView) selfChoiceRootView.findViewById(R.id.invite_self_choice_search_button);
-		emptyView = selfChoiceRootView.findViewById(R.id.photo_container_empty_view);
-		addToFavouritesButton = (ToggleButton) selfChoiceRootView.findViewById(R.id.add_to_favourites);
+		setContentView(R.layout.fragment_new_invite_self_choice);
+		title = (EditText) findViewById(R.id.invite_self_choice_search_text);
+		searchButton = (ImageView) findViewById(R.id.invite_self_choice_search_button);
+		emptyView = findViewById(R.id.photo_container_empty_view);
+		addToFavouritesButton = (ToggleButton) findViewById(R.id.add_to_favourites);
 		
-		
-		packageItemView = (HorizontalListView) selfChoiceRootView.findViewById(R.id.photo_select_container);
+		packageItemView = (HorizontalListView) findViewById(R.id.photo_select_container);
 		packageItemView.setSnappingToCenter(true);
 		packageItemView.setOnCenteredListener(this);
 		
-		addItemButton = (ImageButton) selfChoiceRootView.findViewById(R.id.add_item_button);
+		addItemButton = (ImageButton) findViewById(R.id.add_item_button);
 		
 		// Set onClickListeners for adding photos and whatnot there.
 		addItemButton.setOnClickListener(this);
-		backButton.setOnClickListener(this);
 		searchButton.setOnClickListener(this);
 		dateButton.setOnClickListener(this);
 		addToFavouritesButton.setOnCheckedChangeListener(this);
@@ -108,7 +84,7 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 			}
 		});
 		// Now populate the list if there are arguments
-		Bundle bundle = getArguments();
+		Bundle bundle = getIntent().getExtras();
 		
 		if (bundle != null){
 			String jsonStr = bundle.getString("data");
@@ -126,19 +102,14 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 			}
 					
 			if (list != null && list.size() > 0)	{
-				adapter = new DotchiPackageItemAdapter(getActivity(), R.layout.dotchi_package_item, list, emptyView);
+				adapter = new DotchiPackageItemAdapter(this, R.layout.dotchi_package_item, list, emptyView);
 				packageItemView.setAdapter(adapter);
 				addItemButton.setVisibility(View.VISIBLE);
 				// Need this thing when initializing
 				updateViews(0);
-				mOnGameSetListener.onGameItemSet(list, isSavePackage);
 			}
 		}
 		
-		// Declare the PostUrlTask, but don't execute it yet;
-		dotchiPackageTask = new CreateDotchiPackageTask();
-		
-		return selfChoiceRootView;
 	}
 
 	
@@ -183,7 +154,7 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 					if (list == null)	{
 						list = new ArrayList<JSONObject>();
 						list.add(jo);
-						adapter = new DotchiPackageItemAdapter(getActivity(), R.layout.dotchi_package_item, list, emptyView);
+						adapter = new DotchiPackageItemAdapter(CreateGameItemsActivity.this, R.layout.dotchi_package_item, list, emptyView);
 						packageItemView.setAdapter(adapter);
 						addItemButton.setVisibility(View.VISIBLE);
 					} else	{
@@ -191,7 +162,6 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 						list.set(adapter.getCount()-1, jo);
 						adapter.update(adapter.getCount()-1, jo);
 					}
-					mOnGameSetListener.onGameItemSet(list, isSavePackage);
 
 				} catch (JSONException e) {
 					e.printStackTrace();
@@ -204,7 +174,7 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 	protected void getMultiplePhotos(int position)	{
 		String query = title.getText().toString();
 		Log.d(TAG, "Getting multiple photos for string " + query);
-		Intent intent = new Intent(getActivity(), ChoosePhotoActivity.class);
+		Intent intent = new Intent(this, ChoosePhotoActivity.class);
 		intent.putExtra("search_string", query);
 		intent.putExtra("position", position);
 		startActivityForResult(intent, CHOOSE_PHOTO);
@@ -259,8 +229,10 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
-		case R.id.new_invite_back_to_index_button:
-			NewInviteActivity.switchIndexFragment(null);
+		case R.id.dotchi_package_button:
+			// Between this and favourites, show both under same activity, and then load the fragment?
+			break;
+		case R.id.favourite_package_button:
 			break;
 		case R.id.invite_self_choice_search_button:
 			// call getOnePhoto
@@ -273,15 +245,11 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 		}
 	}
 
-	private void selectDates() {
-		Intent intent = new Intent(getActivity(), ChooseDateActivity.class);
-		startActivity(intent);
-	}
+
 
 	@Override
 	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 		isSavePackage = isChecked;
-		mOnGameSetListener.onGameItemSet(list, isSavePackage);
 		Log.d(TAG, "isSavePackage has been toggled to " + isSavePackage);
 	}
 	
@@ -403,4 +371,5 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 				}
 		}
 	}
+
 }

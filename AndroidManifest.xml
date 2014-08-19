@@ -142,6 +142,10 @@
             android:name="com.dotchi1.CreateGameFirstActivity"
             android:label="@string/title_activity_create_game_first" >
         </activity>
+        <activity
+            android:name="com.dotchi1.CreateGameItemsActivity"
+            android:label="@string/title_activity_create_game_items" >
+        </activity>
     </application>
 
 </manifest>

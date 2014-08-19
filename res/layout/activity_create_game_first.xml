@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
     <EditText
         android:id="@+id/game_title_text"
         android:layout_width="match_parent"
@@ -13,32 +12,11 @@
         android:layout_marginLeft="5dp"
         android:hint="Enter title" />    
         
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_margin="8dp"
-        android:text="Choose a date, or if you want users to decide: "
-        android:textColor="@color/black"
-        android:textSize="14sp"/>
+    <include
+        android:id="@+id/arrange_meeting_layout"
+        layout="@layout/arrange_meeting_layout" />
     
-    <Spinner
-        android:id="@+id/single_or_multiple_dates"
-        android:layout_height="30dp"
-        android:layout_width="match_parent"
-        android:layout_marginLeft="30dp"
-        android:layout_marginBottom="7dp"
-        android:prompt="@string/date_selection_prompt" />
-
-    <TextView
-        android:id="@+id/set_date_view"
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:textColor="@color/black"
-        android:textSize="15sp" />
-    
-    <ListView
-        android:id="@+id/dates_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp" />
+    <include
+        android:id="@+id/vote_layout"
+        layout="@layout/vote_layout" />
 </LinearLayout>

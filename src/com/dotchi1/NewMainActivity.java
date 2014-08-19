@@ -163,15 +163,17 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 		Point p = new Point();
 		d.getSize(p);
 		screenWidth = p.x;
-//	   	slidingMenu = new SlidingMenu(this);
+	   	slidingMenu = new SlidingMenu(this);
+	   	slidingMenu.setMode(SlidingMenu.LEFT);
+	   	slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
 //	   	slidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
 //	   	slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-//	   	slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
-//        slidingMenu.setShadowDrawable(R.drawable.shadow);
-//        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-//        slidingMenu.setFadeDegree(0.35f);
-//	   	slidingMenu.setMenu(R.layout.activity_test);
-//	   	slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+	   	slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
+        slidingMenu.setShadowDrawable(R.drawable.shadow);
+        slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        slidingMenu.setFadeDegree(0.35f);
+	   	slidingMenu.setMenu(R.layout.activity_test);
+	   	slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 	   	friendLayout = inflater.inflate(R.layout.new_friend_list, null);
 	   	expandableListView = (ExpandableListView) friendLayout.findViewById(R.id.new_friends_list);
 		numSelectedView = (TextView) friendLayout.findViewById(R.id.friend_selected_count);
@@ -222,20 +224,12 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 				slidingMenu.showMenu(true);
 			}
 		});
-		ImageView friendsDrawer = (ImageView) actionbar.findViewById(R.id.menu_friends_drawer);
-		friendsDrawer.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				slidingMenu.showSecondaryMenu(true);
-			}
-		});
+
 		getSupportActionBar().setCustomView(actionbar);
 	    getSupportActionBar().setDisplayShowTitleEnabled(false);
 	    getSupportActionBar().setDisplayShowCustomEnabled(true);
 	   	getSupportActionBar().setDisplayShowHomeEnabled(false);
 		
-
 	   	// Set footer
 	   	View homeFeedView = findViewById(R.id.new_home_feed_button);
 	   	homeFeedView.setSelected(true);
@@ -712,16 +706,27 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 			});
 
 			// William edit 2014-2014-07-18-1533 
-			TextView newInvite = (TextView) findViewById(R.id.arrange_meeting);
-			newInvite.setOnClickListener(new OnClickListener() {
+			TextView arrangeMeeting = (TextView) findViewById(R.id.arrange_meeting);
+			arrangeMeeting.setOnClickListener(new OnClickListener() {
 				
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(NewMainActivity.this, CreateGameFirstActivity.class);
 					intent.putExtra("is_friend_data", false);
+					intent.putExtra("dotchiType", "0");
 					Bundle bundle = new Bundle();
 					bundle.putParcelableArrayList("friends", new ArrayList<FriendPageFriendItem>(l));
 					intent.putExtras(bundle);
+					startActivity(intent);
+				}
+			});
+			TextView vote = (TextView) findViewById(R.id.vote);
+			vote.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(NewMainActivity.this, CreateGameFirstActivity.class);
+					intent.putExtra("dotchiType", "1");
 					startActivity(intent);
 				}
 			});
@@ -795,7 +800,5 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 			}
 		}
 	}
-	
-
 	
 }
