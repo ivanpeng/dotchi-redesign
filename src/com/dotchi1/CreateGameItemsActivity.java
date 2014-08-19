@@ -43,8 +43,9 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 	private EditText title;
 	private ImageView searchButton;
 	private ToggleButton addToFavouritesButton;
-	private ImageView dateButton;
-	
+	private Button dotchiPackageButton;
+	private Button favouritePackageButton;
+
 	private HorizontalListView packageItemView;
 	private DotchiPackageItemAdapter adapter;
 	private ArrayList<JSONObject> list;
@@ -62,6 +63,8 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 		searchButton = (ImageView) findViewById(R.id.invite_self_choice_search_button);
 		emptyView = findViewById(R.id.photo_container_empty_view);
 		addToFavouritesButton = (ToggleButton) findViewById(R.id.add_to_favourites);
+		dotchiPackageButton = (Button) findViewById(R.id.dotchi_package_button);
+		favouritePackageButton = (Button) findViewById(R.id.favourite_package_button);
 		
 		packageItemView = (HorizontalListView) findViewById(R.id.photo_select_container);
 		packageItemView.setSnappingToCenter(true);
@@ -72,7 +75,8 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 		// Set onClickListeners for adding photos and whatnot there.
 		addItemButton.setOnClickListener(this);
 		searchButton.setOnClickListener(this);
-		dateButton.setOnClickListener(this);
+		dotchiPackageButton.setOnClickListener(this);
+		favouritePackageButton.setOnClickListener(this);
 		addToFavouritesButton.setOnCheckedChangeListener(this);
 		
 		packageItemView.setOnItemClickListener(new OnItemClickListener() {
@@ -228,11 +232,16 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 
 	@Override
 	public void onClick(View v) {
+		Intent intent = new Intent(this, SelectPackageActivity.class);
 		switch(v.getId()){
 		case R.id.dotchi_package_button:
 			// Between this and favourites, show both under same activity, and then load the fragment?
+			intent.putExtra("is_dotchi_package", true);
+			startActivity(intent);
 			break;
 		case R.id.favourite_package_button:
+			intent.putExtra("is_dotchi_package", false);
+			startActivity(intent);
 			break;
 		case R.id.invite_self_choice_search_button:
 			// call getOnePhoto

@@ -39,5 +39,6 @@
     <string name="title_activity_create_game_first">CreateGameFirstActivity</string>
     <string name="date_selection_prompt">Select date selection type</string>
     <string name="title_activity_create_game_items">Create Game Items</string>
+    <string name="title_activity_select_package">Select Package</string>
 
 </resources>
