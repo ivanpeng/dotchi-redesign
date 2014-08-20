@@ -43,7 +43,6 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 	public static final String TAG = "NewInviteSelfChoiceFragment";
 	public static final int CHOOSE_PHOTO = 100;
 	
-	private Button backButton;
 	private ImageButton addItemButton;
 	private OnGameItemSetListener mOnGameSetListener;
 	
@@ -80,7 +79,6 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 		View selfChoiceRootView = inflater.inflate(R.layout.fragment_new_invite_self_choice, container, false);
 		title = (EditText) selfChoiceRootView.findViewById(R.id.invite_self_choice_search_text);
-		backButton = (Button) selfChoiceRootView.findViewById(R.id.new_invite_back_to_index_button);
 		searchButton = (ImageView) selfChoiceRootView.findViewById(R.id.invite_self_choice_search_button);
 		emptyView = selfChoiceRootView.findViewById(R.id.photo_container_empty_view);
 		addToFavouritesButton = (ToggleButton) selfChoiceRootView.findViewById(R.id.add_to_favourites);
@@ -94,7 +92,6 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 		
 		// Set onClickListeners for adding photos and whatnot there.
 		addItemButton.setOnClickListener(this);
-		backButton.setOnClickListener(this);
 		searchButton.setOnClickListener(this);
 		dateButton.setOnClickListener(this);
 		addToFavouritesButton.setOnCheckedChangeListener(this);
@@ -259,9 +256,6 @@ public class NewInviteSelfChoiceFragment extends Fragment implements OnClickList
 	@Override
 	public void onClick(View v) {
 		switch(v.getId()){
-		case R.id.new_invite_back_to_index_button:
-			NewInviteActivity.switchIndexFragment(null);
-			break;
 		case R.id.invite_self_choice_search_button:
 			// call getOnePhoto
 			getOnePhoto();

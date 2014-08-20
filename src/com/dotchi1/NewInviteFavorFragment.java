@@ -30,7 +30,7 @@ import com.dotchi1.backend.PostUrlTask;
  * We will send in 
  *
  */
-public class NewInviteFavorFragment extends Fragment implements OnClickListener{
+public class NewInviteFavorFragment extends Fragment{
 	
 	static int totalItem;// from api
 	static int totalPages;// 1~5 item one page 
@@ -39,7 +39,6 @@ public class NewInviteFavorFragment extends Fragment implements OnClickListener{
 	protected float downX;
 	protected float upX;
 	// ================ View composer================= //
-	private Button backIndex;
 	private TextView numFavouritesCount;
 	private ListView myDotchiFavouritesList;
 	private ArrayList<String> packageList;
@@ -59,7 +58,6 @@ public class NewInviteFavorFragment extends Fragment implements OnClickListener{
 		Bundle bundle = getArguments();
 		String dotchiId = getActivity().getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE).getString("DOTCHI_ID", "0");
 		View favorRootView = inflater.inflate(R.layout.fragment_new_invite_favor, container, false);
-		backIndex = (Button) favorRootView.findViewById(R.id.new_invite_favor_back_to_index_button);
 		numFavouritesCount = (TextView) favorRootView.findViewById(R.id.new_invite_favor_total_textview);
 		myDotchiFavouritesList = (ListView) favorRootView.findViewById(R.id.my_dotchi_package_list);
 		packageList = new ArrayList<String>();
@@ -105,7 +103,6 @@ public class NewInviteFavorFragment extends Fragment implements OnClickListener{
 			}
 			
 		}.execute(rootUrl + "/game/get_my_dotchi_package", "dotchi_id", dotchiId);
-		backIndex.setOnClickListener(this);
 
 		return favorRootView;
 	}
@@ -116,16 +113,6 @@ public class NewInviteFavorFragment extends Fragment implements OnClickListener{
 		
 	}
 
-
-	@Override
-	public void onClick(View v) {
-		switch(v.getId()){
-		case R.id.new_invite_favor_back_to_index_button:
-			NewInviteActivity.switchIndexFragment(null);
-			break;
-		}
-		//
-	}
 
 
 }

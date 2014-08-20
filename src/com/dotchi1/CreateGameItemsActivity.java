@@ -11,13 +11,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -25,18 +24,20 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.devsmart.android.ui.HorizontalListView;
 import com.devsmart.android.ui.HorizontalListView.OnCenteredListener;
-import com.dotchi1.NewInviteSelfChoiceFragment.OnGameItemSetListener;
 import com.dotchi1.backend.PostUrlTask;
 import com.dotchi1.image.LiteImageLoader;
 
-public class CreateGameItemsActivity extends Activity implements OnClickListener, OnCenteredListener, OnCheckedChangeListener {
+public class CreateGameItemsActivity extends ActionBarActivity implements OnClickListener, OnCenteredListener, OnCheckedChangeListener {
 
 	public static final String TAG = "NewInviteSelfChoiceFragment";
 	public static final int CHOOSE_PHOTO = 100;
+	public static final int REQ_GET_PACKAGE_ITEMS = 101;
 	
 	private ImageButton addItemButton;
 	
@@ -45,26 +46,63 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 	private ToggleButton addToFavouritesButton;
 	private Button dotchiPackageButton;
 	private Button favouritePackageButton;
+	private Button switchImagesButton;
 
 	private HorizontalListView packageItemView;
 	private DotchiPackageItemAdapter adapter;
 	private ArrayList<JSONObject> list;
 	private View emptyView;
 	
+	private Bundle bundle;
 	private boolean isSavePackage = false;
-	
-
+	private int currentPosition = 0;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_new_invite_self_choice);
+		bundle = getIntent().getExtras();
+		// Set actionbar
+		View actionbar = getLayoutInflater().inflate(R.layout.menu_dotchi_package, null);
+		TextView menuTitle = (TextView) actionbar.findViewById(R.id.package_title);
+		menuTitle.setText(getResources().getString(R.string.title_activity_create_game_items));
+		ImageButton forwardButton = (ImageButton) actionbar.findViewById(R.id.forward_button);
+		forwardButton.setVisibility(View.VISIBLE);
+		forwardButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// Start activity for choose friends
+				if (list != null && list.size() > 0){
+					Intent intent = new Intent(CreateGameItemsActivity.this, NewFriendSelectActivity.class);
+					// put bundle
+					bundle.putSerializable("game_item", list);
+					intent.putExtras(bundle);
+					startActivity(intent);
+				} else	{
+					// TODO: make this legal, if dates are viable.
+					Toast.makeText(getApplicationContext(), "Can't have 0 game choices", Toast.LENGTH_SHORT).show();
+				}
+			}
+		});
+		ImageButton backButton = (ImageButton) actionbar.findViewById(R.id.back_home_button);
+		backButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				onBackPressed();
+			}
+		});
+		getSupportActionBar().setCustomView(actionbar);
+		getSupportActionBar().setDisplayShowTitleEnabled(false);
+		getSupportActionBar().setDisplayShowCustomEnabled(true);
+		getSupportActionBar().setDisplayShowHomeEnabled(false);
+		
 		title = (EditText) findViewById(R.id.invite_self_choice_search_text);
 		searchButton = (ImageView) findViewById(R.id.invite_self_choice_search_button);
 		emptyView = findViewById(R.id.photo_container_empty_view);
 		addToFavouritesButton = (ToggleButton) findViewById(R.id.add_to_favourites);
 		dotchiPackageButton = (Button) findViewById(R.id.dotchi_package_button);
 		favouritePackageButton = (Button) findViewById(R.id.favourite_package_button);
+		switchImagesButton = (Button) findViewById(R.id.switch_images_button);
 		
 		packageItemView = (HorizontalListView) findViewById(R.id.photo_select_container);
 		packageItemView.setSnappingToCenter(true);
@@ -77,16 +115,9 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 		searchButton.setOnClickListener(this);
 		dotchiPackageButton.setOnClickListener(this);
 		favouritePackageButton.setOnClickListener(this);
+		switchImagesButton.setOnClickListener(this);
 		addToFavouritesButton.setOnCheckedChangeListener(this);
-		
-		packageItemView.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position,
-					long id) {
-				getMultiplePhotos(position);
-			}
-		});
 		// Now populate the list if there are arguments
 		Bundle bundle = getIntent().getExtras();
 		
@@ -113,7 +144,6 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 				updateViews(0);
 			}
 		}
-		
 	}
 
 	
@@ -126,6 +156,7 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 			try {
 				titleText = item.has("item_title") ? item.getString("item_title") : "";
 				title.setText(titleText);
+				currentPosition = position;
 				// TODO: set event times and GPS when times are available!
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -155,7 +186,7 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 					// Subsequent times: don't need to reinitialize; just need to add through adapter and notify
 					jo.put("item_title", title.getText().toString());
 					Log.d(TAG, "put " + title.getText().toString() + " as string in item_title.");
-					if (list == null)	{
+					if (list == null || list.size() == 0)	{
 						list = new ArrayList<JSONObject>();
 						list.add(jo);
 						adapter = new DotchiPackageItemAdapter(CreateGameItemsActivity.this, R.layout.dotchi_package_item, list, emptyView);
@@ -205,10 +236,31 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 				list.set(position, jo);
 				adapter.update(position, jo);
 			}
+		} else if (requestCode == REQ_GET_PACKAGE_ITEMS)	{
+			// Add the items to the list;
+			addPackageItemsToList(data.getStringExtra("data"));
 		} else
 			super.onActivityResult(requestCode, resultCode, data);
 			
 	}
+
+	public void addPackageItemsToList(String jsonStr) {
+
+		Log.d(TAG, "There's data in the bundle! We're parsing that " + jsonStr);
+		if (jsonStr != null && jsonStr.length() > 0)	{
+			list = new ArrayList<JSONObject>();
+			try {
+				JSONArray ja = new JSONArray(jsonStr);
+				for (int i = 0; i < ja.length(); i++)	{
+					list.add(ja.getJSONObject(i));
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	
+	}
+
 
 	@Override
 	public void onDestroy() {
@@ -237,11 +289,11 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 		case R.id.dotchi_package_button:
 			// Between this and favourites, show both under same activity, and then load the fragment?
 			intent.putExtra("is_dotchi_package", true);
-			startActivity(intent);
+			startActivityForResult(intent, REQ_GET_PACKAGE_ITEMS);
 			break;
 		case R.id.favourite_package_button:
 			intent.putExtra("is_dotchi_package", false);
-			startActivity(intent);
+			startActivityForResult(intent, REQ_GET_PACKAGE_ITEMS);
 			break;
 		case R.id.invite_self_choice_search_button:
 			// call getOnePhoto
@@ -250,6 +302,12 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 		case R.id.add_item_button:
 			// push list to end, and then add a blank template
 			addBlankItem();
+			break;
+		case R.id.switch_images_button:
+			if (list != null && list.size() > 0)
+				getMultiplePhotos(currentPosition);
+			else
+				Toast.makeText(this, "Empty list", Toast.LENGTH_SHORT).show();
 			break;
 		}
 	}
@@ -314,7 +372,7 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 		
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			JSONObject item = objects.get(position);
+			final JSONObject item = objects.get(position);
 			View view = convertView;
 			//if (view == null)	{
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -328,13 +386,21 @@ public class CreateGameItemsActivity extends Activity implements OnClickListener
 			} catch (JSONException e) {
 				Log.w("dotchi package", "image loading failed. Setting default.");
 			}
+			ImageButton deleteObject = (ImageButton) view.findViewById(R.id.delete_package_item);
+			deleteObject.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					list.remove(item);
+					remove(item);
+				}
+			});
 			return view;
 		}
 
 		@Override
 		public void remove(JSONObject object)	{
-			super.remove(object);
 			objects.remove(object);
+			super.remove(object);
 		}
 
 		@Override

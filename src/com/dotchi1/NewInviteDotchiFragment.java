@@ -28,11 +28,10 @@ import com.dotchi1.backend.PostUrlTask;
  * edit at 2014-07-21-12:00
  *
  */
-public class NewInviteDotchiFragment extends Fragment implements OnClickListener{
+public class NewInviteDotchiFragment extends Fragment {
 	
 	// ================ View composer================= //
 	/** {@link #onClick(View)} */
-	Button backIndex;
 	TextView giftNumber;
 	ImageView gift;
 	ListView dotchiPackageListView;
@@ -48,7 +47,6 @@ public class NewInviteDotchiFragment extends Fragment implements OnClickListener
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 		View dotchiRootView = inflater.inflate(R.layout.fragment_new_invite_dotchi, container, false);
 		// bind view xml res
-		backIndex	= (Button)		dotchiRootView.findViewById(R.id.new_invite_back_to_index_button);
 		giftNumber	= (TextView)	dotchiRootView.findViewById(R.id.new_invite_dotchi_gift_textview);
 		gift 		= (ImageView)	dotchiRootView.findViewById(R.id.new_invite_dotchi_gift_imageview);
 		dotchiPackageListView = (ListView) dotchiRootView.findViewById(R.id.hot_dotchi_package_list);
@@ -71,7 +69,6 @@ public class NewInviteDotchiFragment extends Fragment implements OnClickListener
 		} else	{
 			setListValues(data);
 		}
-		backIndex.setOnClickListener(this);
 		return dotchiRootView;
 	}
 	
@@ -127,16 +124,5 @@ public class NewInviteDotchiFragment extends Fragment implements OnClickListener
 	public void onStart() {
 		super.onStart();
 	}
-
-	@Override
-	public void onClick(View v) {
-		switch(v.getId()){
-		case R.id.new_invite_back_to_index_button:
-			NewInviteActivity.switchIndexFragment(null);
-			break;
-
-		}
-	}
-	
 
 }

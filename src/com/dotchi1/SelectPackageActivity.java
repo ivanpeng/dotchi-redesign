@@ -1,18 +1,19 @@
 package com.dotchi1;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 
-public class SelectPackageActivity extends Activity {
+public class SelectPackageActivity extends ActionBarActivity {
 
 	public static final String TAG = "SelectPackageActivity";
+	public static final int REQUEST_HOT_DOTCHI = 10;
+	public static final int REQUEST_MY_PACKAGE = 11;
+	public static final int REQUEST_CONFIRM_GAME = 12;
 	
 	private static FragmentManager mFragmentManager;
 	
@@ -25,31 +26,28 @@ public class SelectPackageActivity extends Activity {
 		Bundle bundle = data.getExtras();
 		boolean which = data.getBooleanExtra("is_dotchi_package", true);
 		if (which)	{
-			switchFragment(NewInviteDotchiFragment.class, R.id.container, bundle);
+			switchFragment(NewInviteDotchiFragment.class, R.id.fragment_container, bundle);
 		} else	
-			switchFragment(NewInviteFavorFragment.class, R.id.container, bundle);
+			switchFragment(NewInviteFavorFragment.class, R.id.fragment_container, bundle);
 		// 
 	}
-
+	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.select_package, menu);
-		return true;
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == REQUEST_HOT_DOTCHI || requestCode == REQUEST_MY_PACKAGE)	{
+			// take intent, get bundle, and switch fragment to Self choice with those arguments
+			Log.d(TAG, "caught onActivityResult from hot dotchi package. rerouting information to fragment now.");
+			if (resultCode == RESULT_OK)	{
+				// We bundled at intent, not inside args. Might as well do it here.
+				Intent returnIntent = new Intent();
+				returnIntent.putExtra("data", data.getStringExtra("data"));
+				setResult(RESULT_OK, returnIntent);
+				finish();
+			}
+		} else
+			super.onActivityResult(requestCode, resultCode, data);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-		if (id == R.id.action_settings) {
-			return true;
-		}
-		return super.onOptionsItemSelected(item);
-	}
 
 	/**
 	 * @author William

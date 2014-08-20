@@ -3,10 +3,13 @@ package com.dotchi1;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -20,6 +23,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -45,6 +49,7 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 	private String voteLimit = "0";
 	private String replyDay = "15";
 	private String dotchiType = "0";
+	private String dotchiTime;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +76,6 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 			voteLayout.setVisibility(View.GONE);
 			setupArrangeMeetingLayout();
 		}
-		
 	}
 
 	protected View setupActionBar()	{
@@ -141,6 +145,36 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 					// Select single date
 					multipleDateSelectView.setVisibility(View.GONE);
 					// Show alert dialog 
+					final DatePicker datePickerView = (DatePicker) getLayoutInflater().inflate(R.layout.date_picker_layout, null);
+					datePickerView.setCalendarViewShown(false);
+					//datePickerView.setMinDate(Calendar.getInstance().getTimeInMillis());
+					AlertDialog dialog = new AlertDialog.Builder(CreateGameFirstActivity.this)
+							// Set title?
+							.setView(datePickerView)
+							.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									// clicked ok; set date
+									int year = datePickerView.getYear();
+									int month = datePickerView.getMonth();
+									int day = datePickerView.getDayOfMonth();
+									Calendar cal = Calendar.getInstance();
+									cal.set(Calendar.YEAR, year);
+									cal.set(Calendar.MONTH, month);
+									cal.set(Calendar.DAY_OF_MONTH, day);
+									SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+									dotchiTime = sdf.format(cal.getTime());
+									singleDateSelectView.setText(dotchiTime);
+								}
+							})
+							.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int which) {
+									dialog.dismiss();
+								}
+							})
+							.create();
+					dialog.show();
 				} else if (position == 1){
 					singleDateSelectView.setText("Selected Dates: ");
 					multipleDateSelectView.setVisibility(View.VISIBLE);
@@ -173,6 +207,7 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 		String dotchiId = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE).getString("DOTCHI_ID", "0");
 		
 		Bundle bundle = new Bundle();
+		bundle.putBoolean("is_secret", isSecret);
 		bundle.putBoolean("is_personal", isPersonal);
 		bundle.putBoolean("is_official", isOfficial);
 		bundle.putString("vote_limit", voteLimit);
@@ -180,6 +215,12 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 		bundle.putString("dotchi_type", dotchiType);
 		bundle.putString("game_title", gameTitle);
 		bundle.putString("dotchi_id", dotchiId);
+		// do a little formatting for dotchi time
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		if (dotchiTime == null)	{
+			bundle.putString("dotchi_time", sdf.format(new Date()));
+		} else
+			bundle.putString("dotchi_time", dotchiTime);
 		return bundle;
 	}
 
