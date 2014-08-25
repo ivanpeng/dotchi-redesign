@@ -36,9 +36,9 @@ public class SelectPackageActivity extends ActionBarActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_HOT_DOTCHI || requestCode == REQUEST_MY_PACKAGE)	{
 			// take intent, get bundle, and switch fragment to Self choice with those arguments
-			Log.d(TAG, "caught onActivityResult from hot dotchi package. rerouting information to fragment now.");
 			if (resultCode == RESULT_OK)	{
-				// We bundled at intent, not inside args. Might as well do it here.
+				Log.d(TAG, "caught onActivityResult from hot dotchi package. rerouting information to fragment now.");
+				Log.d(TAG, "Sending value " + data.getStringExtra("data") + " back");
 				Intent returnIntent = new Intent();
 				returnIntent.putExtra("data", data.getStringExtra("data"));
 				setResult(RESULT_OK, returnIntent);

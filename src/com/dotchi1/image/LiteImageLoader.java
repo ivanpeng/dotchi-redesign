@@ -43,6 +43,15 @@ public class LiteImageLoader {
     }
   
     int stub_id = R.drawable.default_profile_pic;
+    
+    public void DisplayImage(String url, ImageView imageView)	{
+    	DisplayImage(url, stub_id, imageView, 250);
+    }
+    
+    public void DisplayImage(String url, int loader, ImageView imageView)	{
+    	DisplayImage(url, loader, imageView, 250);
+    }
+    
     public void DisplayImage(String url, int loader, ImageView imageView, int size)
     {
         stub_id = loader;

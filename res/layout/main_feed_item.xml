@@ -29,9 +29,16 @@
             <TextView
                 android:id="@+id/feed_title"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="45dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginLeft="35dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:text="Title" />
             <TextView
@@ -40,6 +47,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginLeft="35dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:text="10 friends invited" />
             <TextView
@@ -48,6 +62,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
+                android:layout_marginRight="35dp"
+                android:layout_marginLeft="35dp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
                 android:gravity="center"
                 android:text="posted 0 days ago" />
         </LinearLayout>
@@ -102,7 +123,8 @@
         android:layout_height="80dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:padding="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="2dp"
         android:background="@drawable/border_white"
         android:src="@drawable/default_profile_pic" />
 </RelativeLayout>

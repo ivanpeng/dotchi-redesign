@@ -81,13 +81,23 @@ public class GameActivity extends ActionBarActivity {
 		Intent intent = getIntent();
 		setContentView(R.layout.activity_game);
 		View actionbar = LayoutInflater.from(this).inflate(R.layout.menu_game_play, null);
-		numYesLeft = intent.getIntExtra("vote_limit", -1);
-		// Set the actionbar title now
-		gameTitle = intent.getStringExtra("game_title");
-		gameDate = intent.getStringExtra("dotchi_time");
-		isSecret = intent.getBooleanExtra("is_secret", false);
-		isPersonal = intent.getBooleanExtra("is_personal", false);
-		isOfficial = intent.getBooleanExtra("is_official", false);
+		boolean isDataInBundle = intent.getBooleanExtra("is_bundle", false);
+		if (isDataInBundle){
+			Bundle bundle = intent.getExtras();
+			numYesLeft = bundle.getInt("vote_limit");
+			gameTitle = bundle.getString("game_title");
+			gameDate = bundle.getString("dotchi_time");
+			isSecret = bundle.getBoolean("is_secret");
+			isPersonal = bundle.getBoolean("is_personal");
+			isOfficial = bundle.getBoolean("is_official");
+		} else	{
+			numYesLeft = intent.getIntExtra("vote_limit", -1);
+			gameTitle = intent.getStringExtra("game_title");
+			gameDate = intent.getStringExtra("dotchi_time");
+			isSecret = intent.getBooleanExtra("is_secret", false);
+			isPersonal = intent.getBooleanExtra("is_personal", false);
+			isOfficial = intent.getBooleanExtra("is_official", false);
+		}
 		TextView title = (TextView) actionbar.findViewById(R.id.game_play_title);
 		title.setText(gameTitle);
 		TextView dateView = (TextView) actionbar.findViewById(R.id.game_menu_date);
@@ -353,9 +363,6 @@ public class GameActivity extends ActionBarActivity {
 			return objects.size();
 		}
 
-
-		
-		
 	}
 	
 	class GameResultAdapter	extends ArrayAdapter<JSONObject> {
@@ -397,79 +404,21 @@ public class GameActivity extends ActionBarActivity {
 		}
 	}
 	
-	class GetImagesTask extends AsyncTask<GameCardItem, Void, byte[]>	{
-
-		Context context;
-		byte[] defaultByteArray;
-		
-		public GetImagesTask(Context context){
-			this.context = context;
-			Bitmap bmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.default_profile_pic);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			bmp.compress(CompressFormat.JPEG, 0, baos);
-			defaultByteArray = baos.toByteArray();
-		}
-		
-		@Override
-		protected byte[] doInBackground(GameCardItem... params) {
-			ArrayList<GameCardItem> items = new ArrayList<GameCardItem>();
-			// TODO: make sure there is only one item, because this way we can execute on different threads and then reunite.
-			for (int i = 0; i < params.length; i++)
-				items.add(params[i]);
-			ArrayList<byte[]> images = new ArrayList<byte[]>();
-			for (GameCardItem item: items)	{
-				// get the url from game item, and then return the byte array
-				if (item.getItemImage() != null && !item.getItemImage().equals(""))	{
-					BufferedReader br = null;
-					try	{
-						// Parse first part of code first
-						URL url = new URL(item.getItemImage());
-						ByteArrayOutputStream bais = new ByteArrayOutputStream();
-						InputStream is = url.openStream();
-						byte[] byteChunk = new byte[4096];
-						int n;
-						while((n=is.read(byteChunk)) > 0)	{
-							bais.write(byteChunk, 0, n);
-						}
-						images.add(bais.toByteArray());
-					} catch(IOException iex)	{
-						iex.printStackTrace();
-						// just add the defaultByteArray
-						images.add(defaultByteArray);
-					} finally	{
-						if (br != null)
-							try	{
-								br.close();
-							} catch (IOException e)	{
-								e.printStackTrace();
-							}
-					}
-				}
-			}
-			if (params.length == 0)
-				return defaultByteArray;
-			else
-				return images.get(0);
-		}
-
-		@Override
-		protected void onPostExecute(byte[] result) {
-			//imageData.add(result);
-			Log.d(TAG, "Image Data has been loaded.");
-		}
-	}
-	
 	class InsertGameResultTask extends PostUrlTask	{
 
 		@Override
 		protected void onPostExecute(String result) {
 			result = processResult(result);
+			uploadDialog.dismiss();
 			try {
 				JSONObject jsonObj = new JSONObject(result).getJSONObject("data");
 				String status = jsonObj.getString("status");
 				if (status.equals("success"))	{
 					Log.d(TAG, "Inserted game items successfully");
-					finish();
+					Intent intent = new Intent(GameActivity.this, NewMainActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					startActivity(intent);
+					//finish();
 				}
 				else
 					Log.d(TAG, "Something went wrong!");

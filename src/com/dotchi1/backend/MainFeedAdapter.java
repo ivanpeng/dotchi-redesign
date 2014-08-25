@@ -3,6 +3,7 @@ package com.dotchi1.backend;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -15,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.RelativeLayout.LayoutParams;
 
 import com.dotchi1.CommentActivity;
 import com.dotchi1.EventChoicesActivity;
@@ -73,10 +72,10 @@ public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
 		
 		// Populate views
 		//TODO: determine what type of scale the image needs
-		imageLoader.DisplayImage(item.getHeadImage(), stubloader, headImage, 150);
+		imageLoader.DisplayImage(item.getHeadImage(), headImage);
 		List<VoteItem> voteItems = item.getVoteItem();
 		if (voteItems != null && voteItems.size() > 0)
-			imageLoader.DisplayImage(voteItems.get(0).getItemImage(), stubloader, topPicture, 250);
+			imageLoader.DisplayImage(voteItems.get(0).getItemImage(), topPicture);
 		else
 			topPicture.setImageResource(stubloader);
 		// Set titles 
@@ -96,14 +95,27 @@ public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
 				context.startActivity(intent);
 			}
 		});
-		playButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(context, GameActivity.class);
-				Toast.makeText(context, "Start Game", Toast.LENGTH_LONG).show();
-			}
-		});
+		if (item.getIsPlay())	
+			playButton.setVisibility(View.GONE);
+		else	{
+			playButton.setVisibility(View.VISIBLE);
+			playButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(context, GameActivity.class);
+					// put extras
+					intent.putExtra("game_id", item.getGameId());
+					intent.putExtra("game_title", item.getGameTitle());
+					intent.putExtra("dotchi_time", item.getDotchiTime());
+					intent.putExtra("is_personal", item.getIsPersonal());
+					intent.putExtra("is_secret", item.getIsSecret());
+					intent.putExtra("is_official", false);
+					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					((Activity)context).startActivity(intent);
+				}
+			});
+		}
 		detailsButton.setOnClickListener(new OnClickListener() {
 			
 			@Override

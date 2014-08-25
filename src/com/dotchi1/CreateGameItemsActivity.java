@@ -31,11 +31,12 @@ import android.widget.ToggleButton;
 import com.devsmart.android.ui.HorizontalListView;
 import com.devsmart.android.ui.HorizontalListView.OnCenteredListener;
 import com.dotchi1.backend.PostUrlTask;
+import com.dotchi1.backend.json.JsonDataWrapper;
 import com.dotchi1.image.LiteImageLoader;
 
 public class CreateGameItemsActivity extends ActionBarActivity implements OnClickListener, OnCenteredListener, OnCheckedChangeListener {
 
-	public static final String TAG = "NewInviteSelfChoiceFragment";
+	public static final String TAG = "CreateGameItemsActivity";
 	public static final int CHOOSE_PHOTO = 100;
 	public static final int REQ_GET_PACKAGE_ITEMS = 101;
 	
@@ -74,8 +75,9 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 				// Start activity for choose friends
 				if (list != null && list.size() > 0){
 					Intent intent = new Intent(CreateGameItemsActivity.this, NewFriendSelectActivity.class);
-					// put bundle
-					bundle.putSerializable("game_item", list);
+					// put game items into bundle, as string
+					String gameItemStr = packageItemsToList(list);
+					bundle.putString("game_item", gameItemStr);
 					intent.putExtras(bundle);
 					startActivity(intent);
 				} else	{
@@ -124,25 +126,7 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 		if (bundle != null){
 			String jsonStr = bundle.getString("data");
 			Log.d(TAG, "There's data in the bundle! We're parsing that " + jsonStr);
-			if (jsonStr != null && jsonStr.length() > 0)	{
-				list = new ArrayList<JSONObject>();
-				try {
-					JSONArray ja = new JSONArray(jsonStr);
-					for (int i = 0; i < ja.length(); i++)	{
-						list.add(ja.getJSONObject(i));
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-					
-			if (list != null && list.size() > 0)	{
-				adapter = new DotchiPackageItemAdapter(this, R.layout.dotchi_package_item, list, emptyView);
-				packageItemView.setAdapter(adapter);
-				addItemButton.setVisibility(View.VISIBLE);
-				// Need this thing when initializing
-				updateViews(0);
-			}
+			addPackageItemsToList(jsonStr);
 		}
 	}
 
@@ -219,8 +203,8 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == CHOOSE_PHOTO)	{
 			// We've entered here
-			Log.d("NewInviteSelfChoiceFragment", "We've caught a choose photo request code!");
-			if (resultCode == Activity.RESULT_OK)	{
+			Log.d(TAG, "We've caught a choose photo request code!");
+			if (resultCode == RESULT_OK)	{
 				// grab the url and display it
 				//TODO: need to change this, as the url may also be local files...
 				String url = data.getStringExtra("image");
@@ -238,29 +222,62 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 			}
 		} else if (requestCode == REQ_GET_PACKAGE_ITEMS)	{
 			// Add the items to the list;
-			addPackageItemsToList(data.getStringExtra("data"));
+			if (resultCode == RESULT_OK)
+				addPackageItemsToList(data.getStringExtra("data"));
 		} else
 			super.onActivityResult(requestCode, resultCode, data);
 			
 	}
 
 	public void addPackageItemsToList(String jsonStr) {
-
-		Log.d(TAG, "There's data in the bundle! We're parsing that " + jsonStr);
+		boolean isNewList = false;
 		if (jsonStr != null && jsonStr.length() > 0)	{
-			list = new ArrayList<JSONObject>();
+			if (list == null || list.size() == 0)	{
+				list = new ArrayList<JSONObject>();
+				isNewList = true;
+			}
 			try {
 				JSONArray ja = new JSONArray(jsonStr);
 				for (int i = 0; i < ja.length(); i++)	{
 					list.add(ja.getJSONObject(i));
+					if (!isNewList)
+						adapter.add(ja.getJSONObject(i));
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
-	
+				
+		if (list != null && list.size() > 0)	{
+			if (isNewList)	{
+				adapter = new DotchiPackageItemAdapter(this, R.layout.dotchi_package_item, list, emptyView);
+				packageItemView.setAdapter(adapter);
+				addItemButton.setVisibility(View.VISIBLE);
+				// Need this thing when initializing
+				updateViews(0);
+			}
+			adapter.notifyDataSetChanged();
+		}
 	}
 
+	protected String packageItemsToList(ArrayList<JSONObject> gameItems)	{
+		JSONArray arr = new JSONArray();
+		for (JSONObject jo : gameItems)	{
+			// not sure if this needs a doublecheck for data integrity here;
+			JSONObject formattedJO = new JSONObject();
+			try {
+				formattedJO.put("item_image", jo.get("pic"));
+				formattedJO.put("item_title", jo.get("item_title"));
+				formattedJO.put("is_date", "0");
+				String itemContent = jo.has("item_content")?jo.getString("item_content"): "";
+				formattedJO.put("item_content", itemContent);
+				arr.put(formattedJO);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return JsonDataWrapper.wrapData(arr);
+	}
 
 	@Override
 	public void onDestroy() {
@@ -322,7 +339,6 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 	
 	/**
 	 * This class is tasked with creating a dotchi package
-	 * TODO: have a onPreExecute check to see if this package is indeed new.
 	 * @author Ivan
 	 *
 	 */

@@ -94,7 +94,7 @@ public class NewInviteDotchiFragment extends Fragment {
 						intent.putExtra("package_title", packageList.get(position));
 						// TODO: start activity for result
 						// Need to have the root activity start the next activity, because we are intending on catching it there and rerouting
-						getActivity().startActivityForResult(intent, NewInviteActivity.REQUEST_HOT_DOTCHI);
+						getActivity().startActivityForResult(intent, SelectPackageActivity.REQUEST_HOT_DOTCHI);
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}

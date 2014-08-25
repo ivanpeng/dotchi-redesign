@@ -33,6 +33,8 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 
 	public static final int GET_DATES_REQ_CODE = 10;
 	
+	private TextView gameTitleView;
+	
 	// Arrange Meeting views
 	private TextView singleDateSelectView;
 	private ListView multipleDateSelectView;
@@ -63,6 +65,7 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 		getSupportActionBar().setDisplayShowHomeEnabled(false);
 		
 		// Before we continue, set which view is visible, and which view is gone\
+		gameTitleView = (TextView) findViewById(R.id.game_title_text);
 		Intent lastIntent = getIntent();
 		dotchiType = lastIntent.getStringExtra("dotchiType");
 		View arrangeMeetingLayout = findViewById(R.id.arrange_meeting_layout);
@@ -104,6 +107,7 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 					voteLimit = (voteLimitView.getText() != null && voteLimitView.getText().length() > 0) ? "0": voteLimitView.getText().toString();
 				}
 				// Bundle up, and then send to next step
+				gameTitle = gameTitleView.getText().toString();
 				Bundle bundle = bundleGameArgs();
 				Intent intent = new Intent(CreateGameFirstActivity.this, CreateGameItemsActivity.class);
 				intent.putExtras(bundle);

@@ -89,7 +89,7 @@ public class NewInviteFavorFragment extends Fragment{
 								intent.putExtra("package_id", Integer.parseInt(packageId));
 								intent.putExtra("package_title", packageTitle);
 								intent.putExtra("request_code", NewInviteActivity.REQUEST_MY_PACKAGE);
-								getActivity().startActivityForResult(intent, NewInviteActivity.REQUEST_MY_PACKAGE);
+								getActivity().startActivityForResult(intent, SelectPackageActivity.REQUEST_MY_PACKAGE);
 								
 							} catch (JSONException e) {
 								e.printStackTrace();

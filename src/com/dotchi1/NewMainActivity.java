@@ -187,6 +187,12 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 //                android.R.color.holo_red_light);
 	   	
 		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+			new GetHomeFeedTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootUrl + "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", "0");
+		} else {
+			new GetHomeFeedTask().execute(rootUrl + "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", "0");
+		}
+		
+		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
 			new BaseGetFriendsUrlTask(FriendPageGroupItem.class, GROUP_KEY).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootUrl + "/users/get_user_groups", "dotchi_id", dotchiId);
 		    new BaseGetFriendsUrlTask(FriendPageFriendItem.class, FRIEND_KEY).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootUrl + "/users/get_user_friends", "dotchi_id", dotchiId);
 		} else {
@@ -241,11 +247,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 		
 	    //String rootUrl = getResources().getString(R.string.api_test_root_url);
 		//SharedPreferences preferences = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE);
-		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
-			new GetHomeFeedTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootUrl + "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", "0");
-		} else {
-			new GetHomeFeedTask().execute(rootUrl + "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", "0");
-		}
+
 		
 	}//end of onCreate()
 	
@@ -635,29 +637,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 			expandableListView.expandGroup(FRIEND_KEY);
 			friendAdapter.setFilter(new FriendPageFilter(childData));
 			final List<FriendPageFriendItem> l = (List<FriendPageFriendItem>) childData.get(FRIEND_KEY);
-			TextView inviteButtonFromFriends = (TextView) friendLayout.findViewById(R.id.arrange_get_together_button);
-			inviteButtonFromFriends.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// Start activity of inviting friends, except when clicked here we add the bundle
-					ArrayList<FriendPageItem> selectedList = new ArrayList<FriendPageItem>();
-					if (l.size() > 0)
-						for (FriendPageFriendItem j : l)	{
-							if (j.isSelected())
-								// add to some list
-								selectedList.add(j);
-						}
-					Intent intent = new Intent(NewMainActivity.this, NewInviteActivity.class);
-					Bundle bundle = new Bundle();
-					bundle.putParcelableArrayList("selected_list", selectedList);
-					bundle.putParcelableArrayList("friends", new ArrayList<FriendPageFriendItem>(l));
-					intent.putExtras(bundle);
-					startActivity(intent);
-					
-				}
-			});
-			//slidingMenu.setSecondaryMenu(friendLayout);
+
 			expandableListView.setOnChildClickListener(new OnChildClickListener() {
 				@Override
 				public boolean onChildClick(ExpandableListView parent, final View v,
@@ -712,6 +692,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(NewMainActivity.this, CreateGameFirstActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					intent.putExtra("is_friend_data", false);
 					intent.putExtra("dotchiType", "0");
 					Bundle bundle = new Bundle();
@@ -726,6 +707,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(NewMainActivity.this, CreateGameFirstActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					intent.putExtra("dotchiType", "1");
 					startActivity(intent);
 				}

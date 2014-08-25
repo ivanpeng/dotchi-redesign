@@ -28,12 +28,11 @@
                 android:id="@+id/feed_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginTop="2dp"
                 android:divider="@drawable/new_feed_background"
-                android:dividerHeight="8dp" />
-
+                android:dividerHeight="2dp" />
 		    <LinearLayout
 		        android:id="@+id/header"
 		        android:layout_width="match_parent"
