@@ -1,12 +1,13 @@
 package com.dotchi1;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -21,10 +22,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -36,6 +33,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.dotchi1.backend.MainFeedAdapter;
 import com.dotchi1.backend.PostUrlTask;
 import com.dotchi1.backend.json.JsonDataWrapper;
 import com.dotchi1.image.LiteImageLoader;
@@ -60,7 +58,10 @@ public class GameActivity extends ActionBarActivity {
 	GamePlayAdapter adapter;
 	
 	ArrayList<GameCardItem> gameCards;
+	ArrayList<GameCardItem> eventCards;
 	ArrayList<GameItemResult> gameResults;
+	boolean isEventLeft = true;
+	boolean isGameLeft = true;
 	
 	int numYesLeft;
 	int maxNumYes = numYesLeft;
@@ -143,7 +144,7 @@ public class GameActivity extends ActionBarActivity {
 		    public void onOpened(int position, boolean toRight) {
 		    	Log.d("swipe", "OnOpened called for position " + position + " with toRight " + toRight);
 		    	// Assemble data for pushing out here
-		    	GameCardItem gameCard = gameCards.get(position);
+		    	GameCardItem gameCard = adapter.getItem(position);
 		    	// Subtract from numYesLeft, and determine if that's it.
 		    	String resultStr = toRight? "yes":"no";
 		    	gameResults.add(new GameItemResult(gameCard.getGameItemId(), resultStr));
@@ -156,14 +157,20 @@ public class GameActivity extends ActionBarActivity {
 						numYesLeftView.setText("還剩" + String.valueOf(numYesLeft)+ "票Yes可以選擇");
 					}
 			    	if (numYesLeft == 0)	{
-			    		Log.d(TAG, "Vote limit reached! Setting rest of results to 0, and sending results.");
-			    		// We're finished! Add all the rest of the game results
-			    		for (int i = 0; i < adapter.getCount(); i++){
-			    			GameCardItem item = adapter.getItem(i);
-			    			gameResults.add(new GameItemResult(item.getGameItemId(), "no"));
+			    		if (isEventLeft) {
+			    			adapter = new GamePlayAdapter(GameActivity.this, eventCards);
+			    			gameListView.setAdapter(adapter);
+			    			isEventLeft = false;
+			    		} else	{
+				    		Log.d(TAG, "Vote limit reached! Setting rest of results to 0, and sending results.");
+				    		// We're finished! Add all the rest of the game results
+				    		for (int i = 0; i < adapter.getCount(); i++){
+				    			GameCardItem item = adapter.getItem(i);
+				    			gameResults.add(new GameItemResult(item.getGameItemId(), "no"));
+				    		}
+				    		Log.d(TAG, "GameResults length:" + gameResults.size());
+				    		sendResults();
 			    		}
-			    		Log.d(TAG, "GameResults length:" + gameResults.size());
-			    		sendResults();
 			    	}
 		    	}
 		    }
@@ -177,6 +184,17 @@ public class GameActivity extends ActionBarActivity {
 				for (int position: reverseSortedPositions)	{
 					adapter.remove(adapter.getItem(position));
 					// Here, include the direction as well
+					if (adapter.getCount() == 0)	{
+						// List is empty! Send data
+						if (isEventLeft){
+							isEventLeft = false;
+							adapter = new GamePlayAdapter(GameActivity.this, eventCards);
+							gameListView.setAdapter(adapter);
+						} else	{
+							Log.d(TAG, gameResults.toString());
+							sendResults();
+						}
+					}
 				}
 				adapter.notifyDataSetChanged();
 				gameListView.closeOpenedItems();
@@ -191,51 +209,70 @@ public class GameActivity extends ActionBarActivity {
 		// This part is different from game creator and user; we won't get this if we're someone invited to this game.
 		//gameCards = (ArrayList<GameCardItem>)getIntent().getSerializableExtra("game_cards");
 		// We need gameItemId, so we are going to skip this every time.
-		if (gameCards == null)	{
-			// If these are null, we'll grab the game id, and then call API
-			gameId = getIntent().getIntExtra("game_id", -1);
-			String baseUrl = rootUrl+ "/game/get_game_item";
-			final ProgressDialog progressDialog = ProgressDialog.show(this, "Loading","");
-			progressDialog.setCancelable(true);
-			// After all PostURL Tasks are completed, set the adapter
-			new PostUrlTask(){
+		// If these are null, we'll grab the game id, and then call API
+		gameId = getIntent().getIntExtra("game_id", -1);
+		String baseUrl = rootUrl+ "/game/get_game_item";
+		final ProgressDialog progressDialog = ProgressDialog.show(this, "Loading","");
+		progressDialog.setCancelable(true);
+		// After all PostURL Tasks are completed, set the adapter
+		new PostUrlTask(){
 
-				@Override
-				protected void onPostExecute(String result) {
-					result = processResult(result);
-					Log.d(TAG, "Completed a call of get_game_item: " + result);
-					JSONObject jo;
-					try {
-						jo = new JSONObject(result);
-						JSONArray ja = jo.getJSONArray("data");
-						ObjectMapper mapper = new ObjectMapper();
-						mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
-						gameCards = mapper.readValue(ja.toString(), mapper.getTypeFactory().constructCollectionType(List.class, GameCardItem.class));
-						//numYesLeftView.setText(String.valueOf(gameCards.size()));
-						gameResults = new ArrayList<GameItemResult>(gameCards.size());
-						//for (GameCardItem gci : gameCards)
-						//	new GetImagesTask(GameActivity.this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, gci);
-						Log.d(TAG, "Images grabbed from items");
+			@Override
+			protected void onPostExecute(String result) {
+				result = processResult(result);
+				Log.d(TAG, "Completed a call of get_game_item: " + result);
+				JSONObject jo;
+				try {
+					jo = new JSONObject(result);
+					JSONArray ja = jo.getJSONArray("data");
+					ObjectMapper mapper = new ObjectMapper();
+					mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
+					List<GameCardItem> items = mapper.readValue(ja.toString(), mapper.getTypeFactory().constructCollectionType(List.class, GameCardItem.class));
+					// Now separate items by isDate and not
+					gameCards = new ArrayList<GameCardItem>();
+					eventCards = new ArrayList<GameCardItem>();
+					gameResults = new ArrayList<GameItemResult>(items.size());
+					for (GameCardItem item: items)	{
+						if (item.getIsDate())
+							eventCards.add(item);
+						else
+							gameCards.add(item);
+					}
+					//numYesLeftView.setText(String.valueOf(gameCards.size()));
+					if (gameCards.size() == 0)
+						isGameLeft = false;
+					if (eventCards.size() == 0)	
+						isEventLeft = false;
+					if (isGameLeft)	{
 						adapter = new GamePlayAdapter(GameActivity.this, gameCards);
 						gameListView.setAdapter(adapter);
-						progressDialog.dismiss();
-					} catch (JSONException e) {
-						e.printStackTrace();
-					} catch (JsonParseException e) {
-						e.printStackTrace();
-					} catch (JsonMappingException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
+					} else if (isEventLeft)	{
+						adapter = new GamePlayAdapter(GameActivity.this, eventCards);
+						gameListView.setAdapter(adapter);
 					}
+					progressDialog.dismiss();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				} catch (JsonParseException e) {
+					e.printStackTrace();
+				} catch (JsonMappingException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
-			}.execute(baseUrl, "game_id", String.valueOf(gameId));
-		} else	{
-			adapter = new GamePlayAdapter(getApplicationContext(), gameCards);
-			gameListView.setAdapter(adapter);
-			gameResults = new ArrayList<GameItemResult>(gameCards.size());
-		}
+			}
+		}.execute(baseUrl, "game_id", String.valueOf(gameId));
 	}
+
+	@Override
+	public void onBackPressed() {
+		// We're going to return to MainActivity, but sometimes we might have activity stacks created already. return with clearing top stack
+		Intent intent = new Intent(this, NewMainActivity.class);
+		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		startActivity(intent);
+		//super.onBackPressed();
+	}
+
 	/** 
 	 * @see William add google analytics to tracker user error/exception edit in 2014-07-21 
 	 * <br> and see alse:
@@ -308,31 +345,26 @@ public class GameActivity extends ActionBarActivity {
 			GameCardItem item = objects.get(position);
 			Log.d(TAG, item.toString());
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			ViewHolder holder;
-			View view = convertView; // If we want to recycle views, we use convertView here;
-			if (view == null)	{
+			View view = null; // If we want to recycle views, we use convertView here;
+			if (!item.getIsDate())	{
 				view = inflater.inflate(R.layout.dotchi_package_view_item, null);
-				holder = new ViewHolder();
-				holder.itemImage = (ImageView) view.findViewById(R.id.photo_image);
-				holder.itemTitle = (TextView) view.findViewById(R.id.dotchi_package_title);
-				holder.itemContent = (TextView) view.findViewById(R.id.dotchi_package_description);
-				holder.backContainer = (LinearLayout) view.findViewById(R.id.swipe_right_container);
-				view.setTag(holder);
-			} else
-				holder = (ViewHolder) view.getTag();
+
+				ImageView itemImage = (ImageView) view.findViewById(R.id.photo_image);
+				TextView itemTitle = (TextView) view.findViewById(R.id.dotchi_package_title);
+				TextView itemContent = (TextView) view.findViewById(R.id.dotchi_package_description);
+				//LinearLayout backContainer = (LinearLayout) view.findViewById(R.id.swipe_right_container);
+				
+				imageLoader.DisplayImage(item.getItemImage(), R.drawable.default_profile_pic, itemImage, 250);
+				itemTitle.setText(item.getItemTitle());
+				itemContent.setText(item.getItemContent());
+				ImageView checkmark = (ImageView) view.findViewById(R.id.checkmark_if_selected);
+				checkmark.setVisibility(View.INVISIBLE);
+			} else	{
+				view = MainFeedAdapter.makeEventView(GameActivity.this, item);
+				
+			}
 			((SwipeListView)parent).recycle(view, position);
 
-//			byte[] itemImageData = imageData.get(position);
-//			if (itemImageData == null || itemImageData.length == 0)
-//				holder.itemImage.setImageResource(R.drawable.game_item_default_image);
-//			else
-//				holder.itemImage.setImageBitmap(BitmapFactory.decodeByteArray(itemImageData, 0, itemImageData.length));
-			imageLoader.DisplayImage(item.getItemImage(), R.drawable.default_profile_pic, holder.itemImage, 250);
-			holder.itemTitle.setText(item.getItemTitle());
-			holder.itemContent.setText(item.getItemContent());
-			//============================
-			ImageView checkmark = (ImageView) view.findViewById(R.id.checkmark_if_selected);
-			checkmark.setVisibility(View.INVISIBLE);
 			
 			return view;
 		}
@@ -351,11 +383,6 @@ public class GameActivity extends ActionBarActivity {
 			//imageData.remove(index);
 			Log.d(TAG, "Overridden remove card item completed. " + object.toString() + " removed");
 			Log.d(TAG, "Size of list: " + objects.size());
-			if (objects.size() == 0)	{
-				// List is empty! Send data
-				Log.d(TAG, gameResults.toString());
-				sendResults();
-			}
 		}
 		
 		@Override

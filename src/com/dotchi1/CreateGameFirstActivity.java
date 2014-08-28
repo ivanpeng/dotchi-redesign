@@ -52,6 +52,7 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 	private String replyDay = "15";
 	private String dotchiType = "0";
 	private String dotchiTime;
+	private ArrayList<Date> dates;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -220,6 +221,8 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 		bundle.putString("game_title", gameTitle);
 		bundle.putString("dotchi_id", dotchiId);
 		// do a little formatting for dotchi time
+		if (dates != null)
+			bundle.putSerializable("dates", dates);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		if (dotchiTime == null)	{
 			bundle.putString("dotchi_time", sdf.format(new Date()));
@@ -245,7 +248,7 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 		if (requestCode == GET_DATES_REQ_CODE)	{
 			if (resultCode == RESULT_OK)	{
 				// set list adapter
-				ArrayList<Date> dates = (ArrayList<Date>) data.getSerializableExtra("dates");
+				dates = (ArrayList<Date>) data.getSerializableExtra("dates");
 				multipleDateSelectView.setAdapter(new DateAdapter(this, dates));
 			}
 		} else

@@ -3,14 +3,24 @@ package com.dotchi1.model;
 import java.io.Serializable;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonDeserialize;
+
+import com.dotchi1.backend.json.BooleanDeserializer;
 
 public class GameCardItem implements Serializable{
 
-	private int gameItemId;
-	private String itemImage;
-	private String itemTitle;
-	private String itemContent;
-	private String isDate;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	
+	protected int gameItemId;
+	protected String itemImage;
+	protected String itemTitle;
+	protected String itemContent;
+	@JsonDeserialize(using = BooleanDeserializer.class)
+	protected boolean isDate;
 
 	/**
 	 * This means whether or not it's a local file uri
@@ -34,7 +44,7 @@ public class GameCardItem implements Serializable{
 		this.itemContent = itemContent;
 	}
 	
-	public GameCardItem(int gameItemId,String itemImage, String itemTitle, String itemContent, String isDate)	{
+	public GameCardItem(int gameItemId,String itemImage, String itemTitle, String itemContent, boolean isDate)	{
 		super();
 		this.gameItemId = gameItemId;
 		this.itemImage = itemImage;
@@ -67,10 +77,10 @@ public class GameCardItem implements Serializable{
 	public void setGameItemId(int gameItemId) {
 		this.gameItemId = gameItemId;
 	}
-	public String getIsDate() {
+	public boolean getIsDate() {
 		return isDate;
 	}
-	public void setIsDate(String isDate) {
+	public void setIsDate(boolean isDate) {
 		this.isDate = isDate;
 	}
 

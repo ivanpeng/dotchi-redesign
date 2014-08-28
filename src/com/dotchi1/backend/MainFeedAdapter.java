@@ -1,11 +1,17 @@
 package com.dotchi1.backend;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -23,6 +29,7 @@ import com.dotchi1.GameActivity;
 import com.dotchi1.R;
 import com.dotchi1.image.LiteImageLoader;
 import com.dotchi1.model.BaseFeedData;
+import com.dotchi1.model.GameCardItem;
 import com.dotchi1.model.VoteItem;
 
 public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
@@ -127,6 +134,53 @@ public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
 			}
 		});
 		return view;
+	}
+	
+	public static View makeEventView(Context context, GameCardItem item)	{
+		// Need to compartmentalize this into a static function;
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View view = inflater.inflate(R.layout.date_image_layout, null);
+		TextView yearView = (TextView) view.findViewById(R.id.date_image_year);
+		TextView dateView = (TextView) view.findViewById(R.id.date_image_date);
+		TextView dayOfWeekView = (TextView) view.findViewById(R.id.date_image_day_of_week);
+		LinearLayout timeBox = (LinearLayout) view.findViewById(R.id.date_image_time_box);
+		TextView hourView = (TextView) view.findViewById(R.id.date_image_hour);
+		TextView minuteView = (TextView) view.findViewById(R.id.date_image_minute);
+		TextView ampmView = (TextView) view.findViewById(R.id.date_image_ampm);
+		
+		dayOfWeekView.setText(item.getItemContent());
+		Date d = tryParse(item.getItemTitle());
+		if (d != null){
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(d);
+			// TODO: Convert this all to R.string afterwards
+			yearView.setText(String.valueOf(cal.get(Calendar.YEAR))+ "年");
+			dateView.setText(String.valueOf(cal.get(Calendar.MONTH)) + "月" + cal.get(Calendar.DAY_OF_MONTH) + "號");
+			// TODO: check that this is necessary
+			hourView.setText(String.valueOf(cal.get(Calendar.HOUR)));
+			minuteView.setText(String.valueOf(cal.get(Calendar.MINUTE)));
+			ampmView.setText(cal.get(Calendar.AM_PM) == Calendar.AM? "AM":"PM");
+		}	else
+			Log.w("DATE VIEW", "We've come across an erroneous date. Please check logs for date format");
+		return view;
+	}
+	
+	public static Date tryParse(String dateString)	{
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy'年'MM'月'dd'日' aa HH:mm", Locale.US);
+		SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
+		ArrayList<SimpleDateFormat> formatStrings = new ArrayList<SimpleDateFormat>();
+		formatStrings.add(sdf);
+		formatStrings.add(sdf2);
+		for (SimpleDateFormat formatString : formatStrings)
+	    {
+	        try
+	        {
+	            return formatString.parse(dateString);
+	        }
+	        catch (ParseException e) {}
+	    }
+
+	    return null;
 	}
 	
 

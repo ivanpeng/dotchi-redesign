@@ -1,5 +1,6 @@
 eclipse.preferences.version=1
 encoding//src/com/dotchi1/CreateGameCardActivity.java=UTF-8
+encoding//src/com/dotchi1/CreateGameItemsActivity.java=UTF-8
 encoding//src/com/dotchi1/EventListActivity.java=UTF-8
 encoding//src/com/dotchi1/FriendSelectActivity.java=UTF-8
 encoding//src/com/dotchi1/GameActivity.java=UTF-8
@@ -11,5 +12,6 @@ encoding//src/com/dotchi1/MyDotchiFragment.java=UTF-8
 encoding//src/com/dotchi1/NewInviteActivity.java=UTF-8
 encoding//src/com/dotchi1/NewMainActivity.java=UTF-8
 encoding//src/com/dotchi1/backend/ExpandableListAdapter.java=UTF-8
+encoding//src/com/dotchi1/backend/MainFeedAdapter.java=UTF-8
 encoding//src/com/dotchi1/backend/NewFeedAdapter.java=UTF-8
 encoding//src/com/dotchi1/backend/VoteItemAdapter.java=UTF-8

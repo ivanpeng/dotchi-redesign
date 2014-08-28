@@ -1,13 +1,15 @@
 package com.dotchi1;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -52,6 +54,7 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 	private HorizontalListView packageItemView;
 	private DotchiPackageItemAdapter adapter;
 	private ArrayList<JSONObject> list;
+	private ArrayList<JSONObject> dateList;
 	private View emptyView;
 	
 	private Bundle bundle;
@@ -68,11 +71,34 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 		TextView menuTitle = (TextView) actionbar.findViewById(R.id.package_title);
 		menuTitle.setText(getResources().getString(R.string.title_activity_create_game_items));
 		ImageButton forwardButton = (ImageButton) actionbar.findViewById(R.id.forward_button);
+		// TODO: Add GameCardItems of dates to list
+		ArrayList<Date> dates = (ArrayList<Date>) getIntent().getExtras().getSerializable("dates");
+		if (dates != null && dates.size() > 0)	{
+			dateList = new ArrayList<JSONObject>();
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy'年'MM'月'dd'日' aa HH:mm", Locale.US);
+			SimpleDateFormat dayOfWeekSdf = new SimpleDateFormat("EEE", Locale.TAIWAN);
+			for (Date d: dates)	{
+				JSONObject jo = new JSONObject();
+				String titleStr = sdf.format(d);
+				String contentStr = dayOfWeekSdf.format(d);
+				try {
+					jo.put("item_title", titleStr);
+					jo.put("item_content", contentStr);
+					jo.put("is_date", 1);
+					dateList.add(jo);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		forwardButton.setVisibility(View.VISIBLE);
 		forwardButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				// Start activity for choose friends
+				// Before we start, add all of date objects to original list
+				if (list != null && dateList != null)
+					list.addAll(dateList);
 				if (list != null && list.size() > 0){
 					Intent intent = new Intent(CreateGameItemsActivity.this, NewFriendSelectActivity.class);
 					// put game items into bundle, as string
@@ -266,9 +292,15 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 			// not sure if this needs a doublecheck for data integrity here;
 			JSONObject formattedJO = new JSONObject();
 			try {
-				formattedJO.put("item_image", jo.get("pic"));
+				if (jo.has("pic"))
+					formattedJO.put("item_image", jo.get("pic"));
+				else
+					formattedJO.put("item_image", "");
 				formattedJO.put("item_title", jo.get("item_title"));
-				formattedJO.put("is_date", "0");
+				if(jo.has("is_date"))
+					formattedJO.put("is_date", jo.get("is_date"));
+				else
+					formattedJO.put("is_date", "0");
 				String itemContent = jo.has("item_content")?jo.getString("item_content"): "";
 				formattedJO.put("item_content", itemContent);
 				arr.put(formattedJO);

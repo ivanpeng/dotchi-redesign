@@ -150,6 +150,7 @@
             android:name="com.dotchi1.SelectPackageActivity"
             android:label="@string/title_activity_select_package" >
         </activity>
+
     </application>
 
 </manifest>

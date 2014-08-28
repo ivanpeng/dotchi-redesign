@@ -7,57 +7,20 @@ import org.codehaus.jackson.map.annotate.JsonDeserialize;
 import com.dotchi1.backend.json.BooleanDeserializer;
 import com.dotchi1.backend.json.MedalTypeDeserializer;
 
-public class VoteItem implements Serializable {
+public class VoteItem extends GameCardItem implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private int gameItemId;
-	private String itemImage;
-	private String itemTitle;
-	private String itemContent;
+
 	private int votes;
 	private float percent;
-	@JsonDeserialize(using = BooleanDeserializer.class)
-	private boolean isDate;
 	@JsonDeserialize(using = MedalTypeDeserializer.class)
 	private MedalType medals;
 	@JsonDeserialize(using = BooleanDeserializer.class)
 	private boolean finalItem;
-	
-	public int getGameItemId() {
-		return gameItemId;
-	}
-
-	public void setGameItemId(int gameItemId) {
-		this.gameItemId = gameItemId;
-	}
-
-	public String getItemImage() {
-		return itemImage;
-	}
-
-	public void setItemImage(String itemImage) {
-		this.itemImage = itemImage;
-	}
-
-	public String getItemTitle() {
-		return itemTitle;
-	}
-
-	public void setItemTitle(String itemTitle) {
-		this.itemTitle = itemTitle;
-	}
-
-	public String getItemContent() {
-		return itemContent;
-	}
-
-	public void setItemContent(String itemContent) {
-		this.itemContent = itemContent;
-	}
 
 	public int getVotes() {
 		return votes;
@@ -73,14 +36,6 @@ public class VoteItem implements Serializable {
 
 	public void setPercent(float percent) {
 		this.percent = percent;
-	}
-
-	public boolean getIsDate() {
-		return isDate;
-	}
-
-	public void setIsDate(boolean isDate) {
-		this.isDate = isDate;
 	}
 
 	public MedalType getMedals() {

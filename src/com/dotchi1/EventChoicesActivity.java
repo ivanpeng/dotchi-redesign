@@ -3,28 +3,34 @@ package com.dotchi1;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.ActionBar;
+import android.app.ActionBar.Tab;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.devsmart.android.ui.HorizontalListView;
+import com.dotchi1.backend.MainFeedAdapter;
 import com.dotchi1.backend.ViewPagerAdapter;
 import com.dotchi1.image.LiteImageLoader;
 import com.dotchi1.model.VoteItem;
 import com.dotchi1.model.VoteItem.MedalType;
 
-public class EventChoicesActivity extends ActionBarActivity {
+public class EventChoicesActivity extends FragmentActivity {
 
+	public static final String TAG = "EventChoicesActivity";
+	
 	private static final int EVENT_CHOICES_ACTIVITY_IMAGE_SIZE = 150;
 	private static final int EVENT_CHOICES_NONE = 0;
 	private static final int EVENT_CHOICES_EVENT = 1;
@@ -48,6 +54,8 @@ public class EventChoicesActivity extends ActionBarActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_choices);
 		
+		ActionBar actionBar = getActionBar();
+		
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		
 		// Set Views
@@ -59,6 +67,42 @@ public class EventChoicesActivity extends ActionBarActivity {
 			splitVoteItems();
 			viewPager.setAdapter(new EventTypePagerAdapter(this));
 		}
+		
+		// Create a tab listener that is called when the user changes tabs.
+	    ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+			@Override
+			public void onTabReselected(Tab arg0,
+					android.app.FragmentTransaction arg1) {
+			}
+
+			@Override
+			public void onTabSelected(Tab tab,
+					android.app.FragmentTransaction ft) {
+				viewPager.setCurrentItem(tab.getPosition());
+			}
+
+			@Override
+			public void onTabUnselected(Tab arg0,
+					android.app.FragmentTransaction arg1) {
+			}
+
+	    };
+	    
+	    // Add new tabs only if pagerState is set to both;
+	    if (pagerState == EVENT_CHOICES_BOTH)	{
+			actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+			actionBar.addTab(actionBar.newTab().setText("Event").setTabListener(tabListener));
+			actionBar.addTab(actionBar.newTab().setText("Date").setTabListener(tabListener));
+			
+			viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+                @Override
+                public void onPageSelected(int position) {
+                    // When swiping between pages, select the
+                    // corresponding tab.
+                    getActionBar().setSelectedNavigationItem(position);
+                }
+            });
+	    }
 	}
 	
 	protected void splitVoteItems()	{
@@ -84,7 +128,7 @@ public class EventChoicesActivity extends ActionBarActivity {
 			pagerSize = 2;
 			pagerState = EVENT_CHOICES_BOTH;
 		}
-		
+		Log.d(TAG, "Pager state set to " + pagerState);
 		dateAdapter = new DetailChoiceAdapter(this, 0, dateItems);
 		eventAdapter = new DetailChoiceAdapter(this, 0, eventItems);
 	}
@@ -141,8 +185,15 @@ public class EventChoicesActivity extends ActionBarActivity {
 				view = inflater.inflate(R.layout.choice_detail_item, null);
 			}
 			ImageView votePic = (ImageView) view.findViewById(R.id.choice_detail_image);
-			imageLoader.DisplayImage(item.getItemImage(), R.drawable.new_feed_photo_default, votePic, EVENT_CHOICES_ACTIVITY_IMAGE_SIZE);
-			
+			if (!item.getIsDate())	{
+				votePic.setVisibility(View.VISIBLE);
+				imageLoader.DisplayImage(item.getItemImage(), R.drawable.new_feed_photo_default, votePic, EVENT_CHOICES_ACTIVITY_IMAGE_SIZE);
+			} else	{
+				votePic.setVisibility(View.INVISIBLE);
+				View dateView = MainFeedAdapter.makeEventView(context, item);
+				LinearLayout dateLayout = (LinearLayout)view.findViewById(R.id.date_layout);
+				dateLayout.addView(dateView);
+			}
 			TextView title = (TextView) view.findViewById(R.id.choice_detail_title);
 			title.setText(item.getItemTitle());
 			TextView desc = (TextView) view.findViewById(R.id.choice_detail_description);
