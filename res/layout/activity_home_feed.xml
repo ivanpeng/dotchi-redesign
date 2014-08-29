@@ -8,9 +8,53 @@
 	    android:orientation="vertical"
 	    android:background="@drawable/new_feed_background" >
 	    <LinearLayout
-	        android:layout_width="0dp"
-	        android:layout_height="0dp"
-	        android:focusable="true" />
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/placeholder_height"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/menu_background"
+                android:orientation="horizontal" >
+
+                <RelativeLayout
+                    android:id="@+id/arrange_meeting"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/arrange_meeting_with_logo" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:alpha="0.7"
+                    android:background="@color/white" />
+
+                <RelativeLayout
+                    android:id="@+id/vote"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:src="@drawable/vote_with_image" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+
 	    <FrameLayout
 	        android:id="@+id/home_feed_container"
 	        android:layout_width="match_parent"
@@ -24,7 +68,7 @@
 	            android:layout_height="match_parent"
 	      		android:gravity="center"
 	      		android:text="No results found." />
-	        <com.larswerkman.quickreturnlistview.QuickReturnListView
+	        <ListView
                 android:id="@+id/feed_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -33,38 +77,7 @@
                 android:layout_marginTop="2dp"
                 android:divider="@drawable/new_feed_background"
                 android:dividerHeight="2dp" />
-		    <LinearLayout
-		        android:id="@+id/header"
-		        android:layout_width="match_parent"
-		        android:layout_height="@dimen/placeholder_height"
-		        android:orientation="vertical">
-		        
-			    <LinearLayout
-			        android:layout_width="match_parent"
-			        android:layout_height="37dp"
-			        android:orientation="horizontal"
-			        android:background="@drawable/new_feed_menu_background">
-			        <TextView android:id="@+id/arrange_meeting"
-			            android:layout_width="0dp"
-			            android:layout_height="match_parent"
-			            android:layout_weight="1"
-			            android:gravity="center"
-			            android:text="約聚會" />
-			        <View
-			            android:layout_width="1dp"
-			            android:layout_height="match_parent"
-			            android:layout_marginTop="4dp"
-			            android:layout_marginBottom="4dp"
-			            android:alpha="0.3"
-			            android:background="@color/black" />
-			        <TextView android:id="@+id/vote"
-			            android:layout_width="0dp"
-			            android:layout_height="match_parent"
-			            android:layout_weight="1"
-			            android:gravity="center"
-			            android:text="辦投票" />
-			    </LinearLayout>
-			</LinearLayout>
+
 	
 		</FrameLayout>
 	    <include android:layout_width="match_parent"

@@ -94,7 +94,10 @@ public class CreateGameFirstActivity extends ActionBarActivity implements OnChec
 			}
 		});
 		TextView packageTitleView = (TextView) actionbar.findViewById(R.id.package_title);
-		packageTitleView.setText("Create Game");
+		if (dotchiType.equals("0"))
+			packageTitleView.setText("Arrange Meeting");
+		else
+			packageTitleView.setText("Vote");
 		ImageButton forwardButton = (ImageButton) actionbar.findViewById(R.id.forward_button);
 		forwardButton.setVisibility(View.VISIBLE);
 		forwardButton.setOnClickListener(new OnClickListener() {

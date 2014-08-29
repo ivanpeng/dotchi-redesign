@@ -75,15 +75,14 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 		ArrayList<Date> dates = (ArrayList<Date>) getIntent().getExtras().getSerializable("dates");
 		if (dates != null && dates.size() > 0)	{
 			dateList = new ArrayList<JSONObject>();
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy'年'MM'月'dd'日' aa HH:mm", Locale.US);
-			SimpleDateFormat dayOfWeekSdf = new SimpleDateFormat("EEE", Locale.TAIWAN);
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.US);
 			for (Date d: dates)	{
 				JSONObject jo = new JSONObject();
 				String titleStr = sdf.format(d);
-				String contentStr = dayOfWeekSdf.format(d);
 				try {
+					jo.put("item_image", "");
 					jo.put("item_title", titleStr);
-					jo.put("item_content", contentStr);
+					jo.put("item_content", "");
 					jo.put("is_date", 1);
 					dateList.add(jo);
 				} catch (JSONException e) {

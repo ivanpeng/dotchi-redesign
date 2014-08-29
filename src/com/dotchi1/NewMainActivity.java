@@ -14,7 +14,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -37,10 +36,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.animation.TranslateAnimation;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.CompoundButton;
@@ -51,6 +47,7 @@ import android.widget.ExpandableListView.OnChildClickListener;
 import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -84,7 +81,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 	//private SwipeRefreshLayout swipeLayout;
 	
 	private View mHeader;
-	private QuickReturnListView listView;
+	private ListView listView;
 	private LinearLayout mQuickReturnView;
 	private View mPlaceHolder;
 	private int mCachedVerticalScrollRange;
@@ -103,31 +100,6 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 	private boolean isFriendState = false;
 	private MainFeedAdapter adapter;
 	private ArrayList<BaseFeedData> feedData;
-	
-	static final int GROUP_KEY = 0;
-	static final int FRIEND_KEY = 1;
-	private List<Integer> headers;
-	private HashMap<Integer, List<? extends FriendPageItem>> childData;
-	private ExpandableListView expandableListView;
-	private ExpandableListAdapter friendAdapter;
-	private View friendLayout;
-	private boolean[] isFinished = {false,false};
-	private static int selectedCount = 0;
-	private static TextView numSelectedView;
-	
-	private static Handler friendsUiHandler = new Handler()	{
-
-		@Override
-		public void handleMessage(Message msg) {
-			switch(msg.what){
-				case (UPDATE_COUNT):
-					numSelectedView.setText(""+ selectedCount);
-					break;
-			}
-			super.handleMessage(msg);
-		}
-		
-	};
 	
 	public void setupUI(View view) {
 	    //Set up touch listener for non-text box views to hide keyboard.
@@ -174,9 +146,6 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
         slidingMenu.setFadeDegree(0.35f);
 	   	slidingMenu.setMenu(R.layout.activity_test);
 	   	slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-	   	friendLayout = inflater.inflate(R.layout.new_friend_list, null);
-	   	expandableListView = (ExpandableListView) friendLayout.findViewById(R.id.new_friends_list);
-		numSelectedView = (TextView) friendLayout.findViewById(R.id.friend_selected_count);
 //	   	slidingMenu.setSecondaryMenu(R.layout.new_friend_list);
 
 //	   	swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
@@ -191,18 +160,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 		} else {
 			new GetHomeFeedTask().execute(rootUrl + "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", "0");
 		}
-		
-		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
-			new BaseGetFriendsUrlTask(FriendPageGroupItem.class, GROUP_KEY).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootUrl + "/users/get_user_groups", "dotchi_id", dotchiId);
-		    new BaseGetFriendsUrlTask(FriendPageFriendItem.class, FRIEND_KEY).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootUrl + "/users/get_user_friends", "dotchi_id", dotchiId);
-		} else {
-		    new BaseGetFriendsUrlTask(FriendPageGroupItem.class, GROUP_KEY).execute(rootUrl + "/users/get_user_groups", "dotchi_id", dotchiId);
-		    new BaseGetFriendsUrlTask(FriendPageFriendItem.class, FRIEND_KEY).execute(rootUrl + "/users/get_user_friends", "dotchi_id", dotchiId);
-		}
-		//isFinished[GROUP_KEY] = true;
-		new PopulateViewTask().execute();
-		
-		
+
 		View actionbar = inflater.inflate(R.layout.menu_new_feed, null);
 		final TextView title = (TextView)actionbar.findViewById(R.id.menu_new_feed_title);
 		title.setOnClickListener(new OnClickListener(){
@@ -230,6 +188,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 				slidingMenu.showMenu(true);
 			}
 		});
+		
 
 		getSupportActionBar().setCustomView(actionbar);
 	    getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -243,7 +202,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 		mHeader = inflater.inflate(R.layout.header, null);
 		mQuickReturnView = (LinearLayout) findViewById(R.id.header);
 		mPlaceHolder = mHeader.findViewById(R.id.placeholder);
-		listView = (QuickReturnListView) findViewById(R.id.feed_list);
+		listView = (ListView) findViewById(R.id.feed_list);
 		
 	    //String rootUrl = getResources().getString(R.string.api_test_root_url);
 		//SharedPreferences preferences = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE);
@@ -374,91 +333,12 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 			super.onActivityResult(requestCode, responseCode, data);
 		} else if (requestCode == CREATE_GROUP_REQ_CODE)	{
 			// Add group; either pull again, or just notify data set changed
-			Log.d("Friends", "Group create caught!");
-			friendAdapter.notifyDataSetChanged();
 			super.onActivityResult(requestCode, responseCode, data);
 		} else
 			super.onActivityResult(requestCode, responseCode, data);
 	}
 
-	protected void setListView()	{
-		
-		listView.getViewTreeObserver().addOnGlobalLayoutListener(
-				new ViewTreeObserver.OnGlobalLayoutListener() {
-					@Override
-					public void onGlobalLayout() {
-						mQuickReturnHeight = mQuickReturnView.getHeight();
-						listView.computeScrollY();
-						mCachedVerticalScrollRange = listView.getListHeight();
-					}
-				});
-		
-		listView.setOnScrollListener(new OnScrollListener() {
-			@SuppressLint("NewApi")
-			@Override
-			public void onScroll(AbsListView view, int firstVisibleItem,
-					int visibleItemCount, int totalItemCount) {
-				mScrollY = 0;
-				int translationY = 0;
-				
-				if (listView.scrollYIsComputed()) {
-					mScrollY = listView.getComputedScrollY();
-				}
-				
-				int rawY = mPlaceHolder.getTop()
-						- Math.min(
-								mCachedVerticalScrollRange
-								- listView.getHeight(), mScrollY);
-				switch (mState) {
-				case STATE_OFFSCREEN:
-					if (rawY <= mMinRawY) {
-						mMinRawY = rawY;
-					} else {
-						mState = STATE_RETURNING;
-					}
-					translationY = rawY;
-					break;
-				case STATE_ONSCREEN:
-					if (rawY < -mQuickReturnHeight) {
-						mState = STATE_OFFSCREEN;
-						mMinRawY = rawY;
-					}
-					translationY = rawY;
-					break;
-				case STATE_RETURNING:
-					translationY = (rawY - mMinRawY) - mQuickReturnHeight;
-					if (translationY > 0) {
-						translationY = 0;
-						mMinRawY = rawY - mQuickReturnHeight;
-					}
-					if (rawY > 0) {
-						mState = STATE_ONSCREEN;
-						translationY = rawY;
-					}
-					if (translationY < -mQuickReturnHeight) {
-						mState = STATE_OFFSCREEN;
-						mMinRawY = rawY;
-					}
-					break;
-				}
-				/** this can be used if the build is below honeycomb **/
-				if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.HONEYCOMB) {
-					anim = new TranslateAnimation(0, 0, translationY,
-							translationY);
-					anim.setFillAfter(true);
-					anim.setDuration(0);
-					mQuickReturnView.startAnimation(anim);
-				} else {
-					mQuickReturnView.setTranslationY(translationY);
-				}
-				
-			}
-			
-			@Override
-			public void onScrollStateChanged(AbsListView view, int scrollState) {
-			}
-		});
-	}
+
 	
 	class GetHomeFeedTask extends PostUrlTask	{
 
@@ -479,7 +359,6 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 					//adapter = new NewFeedAdapter(NewMainActivity.this, R.layout.new_feed_item, feedData, screenWidth);
 					adapter = new MainFeedAdapter(NewMainActivity.this, 0, feedData, new LiteImageLoader(getApplicationContext()));
 					listView.setAdapter(adapter);
-					listView.addHeaderView(mHeader);
 					//Set OnItemClickListener
 					listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -489,52 +368,34 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 							RelativeLayout imageLayout = (RelativeLayout) view.findViewById(R.id.image_layout);
 							final RelativeLayout onClickLayout = (RelativeLayout) view.findViewById(R.id.on_click_layout);
 							final LinearLayout imageDetailsLayout = (LinearLayout) view.findViewById(R.id.image_details_layout);
-							view.setSelected(!view.isSelected());
-							if (view.isSelected())	{
-								// add mask, disappear textView Layout
-								onClickLayout.setVisibility(View.VISIBLE);
-								imageDetailsLayout.setVisibility(View.GONE);
-								Log.d(TAG, "Item View Selected");
-								onClickLayout.setOnClickListener(new OnClickListener() {
-									
-									@Override
-									public void onClick(View v) {
-										v.setSelected(false);
-										onClickLayout.setVisibility(View.GONE);
-										imageDetailsLayout.setVisibility(View.VISIBLE);
-									}
-								});
-							} else	{
-								onClickLayout.setVisibility(View.GONE);
-								imageDetailsLayout.setVisibility(View.VISIBLE);
-								Log.d(TAG, "Item View unselected");
+							if (onClickLayout != null)	{
+								view.setSelected(!view.isSelected());
+								if (view.isSelected())	{
+									// add mask, disappear textView Layout
+									onClickLayout.setVisibility(View.VISIBLE);
+									imageDetailsLayout.setVisibility(View.GONE);
+									Log.d(TAG, "Item View Selected");
+									onClickLayout.setOnClickListener(new OnClickListener() {
+										
+										@Override
+										public void onClick(View v) {
+											v.setSelected(false);
+											onClickLayout.setVisibility(View.GONE);
+											imageDetailsLayout.setVisibility(View.VISIBLE);
+										}
+									});
+								} else	{
+									onClickLayout.setVisibility(View.GONE);
+									imageDetailsLayout.setVisibility(View.VISIBLE);
+									Log.d(TAG, "Item View unselected");
+								}
 							}
 						}
 					});
-					
-					setListView();
-/*					listView.setOnScrollListener(new OnScrollListener() {
-						
-						@Override
-						public void onScrollStateChanged(AbsListView view, int scrollState) {
-						}
-						
-						@Override
-						public void onScroll(AbsListView view, int firstVisibleItem,
-								int visibleItemCount, int totalItemCount) {
-							if (firstVisibleItem == 0)
-								swipeLayout.setEnabled(true);
-							else
-								swipeLayout.setEnabled(false);
-						}
-					});*/
-					
 				} else	{
 					listView.setAdapter(null);
 					TextView empty = (TextView) findViewById(R.id.empty_view);
 					empty.setVisibility(View.VISIBLE);
-					//listView.setEmptyView(empty);
-					//setListView();
 				}
 				
 			} else 	{
@@ -550,237 +411,4 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 			
 		}
 	}
-	@SuppressWarnings("rawtypes")
-	class BaseGetFriendsUrlTask extends PostUrlTask	{
-
-		private Class className;
-		private int type;
-		
-		public BaseGetFriendsUrlTask(Class className, int type)	{
-			this.className = className;
-			this.type = type;
-		}
-		
-		@Override
-		protected void onPostExecute(String result) {
-			result = processResult(result);
-			JSONObject jsonObj;
-			try {
-				jsonObj = new JSONObject(result);
-				JSONArray arr = jsonObj.getJSONArray("data");
-				Log.d(TAG, arr.toString());
-				if (childData == null)
-					childData = new HashMap<Integer, List<? extends FriendPageItem>>();
-				ObjectMapper mapper = new ObjectMapper();
-				mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
-				mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-				if (type == GROUP_KEY)	{
-					List<FriendPageGroupItem> groups = mapper.readValue(arr.toString(), mapper.getTypeFactory().constructCollectionType(List.class, className));
-					childData.put(GROUP_KEY, groups);
-					Log.d(TAG, groups.toString());
-				} else {
-					// type == FRIEND_KEY
-					List<FriendPageFriendItem> friends = mapper.readValue(arr.toString(), mapper.getTypeFactory().constructCollectionType(List.class, className));
-					childData.put(FRIEND_KEY, friends.subList(0, 50));
-					Log.d(TAG, friends.toString());
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			} catch (JsonParseException e) {
-				e.printStackTrace();
-			} catch (JsonMappingException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			// Set the task to be finished
-			isFinished[type] = true;
-		}
-	}
-	
-	
-	
-	class PopulateViewTask extends AsyncTask<Void, Void, Void>{
-
-		static final long TIMEOUT_LENGTH = 30000;
-		static final long REFRESH_INTERVAL = 100;
-		
-		@Override
-		protected Void doInBackground(Void... params) {
-			// Check if both lists are populated; if they are, assemble list and populate listview!
-			// Can't check if these are null; if there's no data returned then this loop will never exit. Add a boolean instead.
-			long timeWaiting = 0;
-			while ((!isFinished[0] || !isFinished[1]) && timeWaiting < TIMEOUT_LENGTH)	{
-				try {
-					Thread.sleep(REFRESH_INTERVAL);
-					timeWaiting += REFRESH_INTERVAL;
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-			// If we're here, that means that either both the lists are complete, or we're timed out.
-			if (timeWaiting < TIMEOUT_LENGTH)	{
-				// We also want to 
-				return null;
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(Void result) {
-			headers = new ArrayList<Integer>();
-			headers.add(GROUP_KEY);
-			headers.add(FRIEND_KEY);
-			friendAdapter = new ExpandableListAdapter(NewMainActivity.this, headers, childData);
-			expandableListView.setAdapter(friendAdapter);
-			expandableListView.expandGroup(GROUP_KEY);
-			expandableListView.expandGroup(FRIEND_KEY);
-			friendAdapter.setFilter(new FriendPageFilter(childData));
-			final List<FriendPageFriendItem> l = (List<FriendPageFriendItem>) childData.get(FRIEND_KEY);
-
-			expandableListView.setOnChildClickListener(new OnChildClickListener() {
-				@Override
-				public boolean onChildClick(ExpandableListView parent, final View v,
-						int groupPosition, int childPosition, long id) {
-					// Get the item from data, and then set selected item;
-					final FriendPageItem item = childData.get(groupPosition).get(childPosition);
-					Log.d(TAG, "Group position " + String.valueOf(groupPosition) + " and child position " + String.valueOf(childPosition) + " set to " + String.valueOf(!item.isSelected()));
-					// Toggle it
-					// Before we jump into group or friend, we determine whether or not this item is selected
-					ToggleButton highlightedButton = (ToggleButton) v.findViewById(R.id.friend_invite_button);
-					highlightedButton.setOnCheckedChangeListener(new OnCheckedChangeListener(){
-						@Override
-						public void onCheckedChanged(CompoundButton buttonView,
-								boolean isChecked) {
-							item.setSelected(isChecked);
-							v.setSelected(isChecked);
-						}
-						
-					});
-					highlightedButton.setChecked(!item.isSelected());
-					if (item.isSelected())	{
-						selectedCount++;
-					} else
-						selectedCount--;
-					Message m = new Message();
-					m.what = UPDATE_COUNT;
-					friendsUiHandler.sendMessage(m);
-					return false;
-				}
-			});
-			final EditText searchbar = (EditText) friendLayout.findViewById(R.id.friend_search_text);
-			searchbar.addTextChangedListener(new TextWatcher(){
-				@Override
-				public void afterTextChanged(Editable s) {
-					Log.d(TAG, "Text changed: " + s.toString());
-					friendAdapter.getFilter().filter(s.toString());
-				}
-				@Override
-				public void beforeTextChanged(CharSequence cs, int start,
-						int count, int after) {
-				}
-				@Override
-				public void onTextChanged(CharSequence cs, int start, int before,
-						int count) {
-				}
-			});
-
-			// William edit 2014-2014-07-18-1533 
-			TextView arrangeMeeting = (TextView) findViewById(R.id.arrange_meeting);
-			arrangeMeeting.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(NewMainActivity.this, CreateGameFirstActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					intent.putExtra("is_friend_data", false);
-					intent.putExtra("dotchiType", "0");
-					Bundle bundle = new Bundle();
-					bundle.putParcelableArrayList("friends", new ArrayList<FriendPageFriendItem>(l));
-					intent.putExtras(bundle);
-					startActivity(intent);
-				}
-			});
-			TextView vote = (TextView) findViewById(R.id.vote);
-			vote.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(NewMainActivity.this, CreateGameFirstActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					intent.putExtra("dotchiType", "1");
-					startActivity(intent);
-				}
-			});
-		}
-	}
-	
-	/**
-	 * This function is much more nested with this class than the adapter, so we keep here. We have the set filter layer done here as opposed
-	 * to being done in ExpandableListAdapter; to keep it generic. The only thing is, we need to set FriendPageFilter for NewFriendSelectActivity as well
-	 * @author Ivan
-	 *
-	 */
-	public class FriendPageFilter extends Filter	{
-		
-		HashMap<Integer, List<? extends FriendPageItem>> filteredData;
-		
-		public FriendPageFilter(HashMap<Integer, List<? extends FriendPageItem>> data)	{
-			super();
-			this.filteredData = data;
-		}
-
-		@Override
-		protected FilterResults performFiltering(CharSequence constraint) {
-			FilterResults results = new FilterResults();
-			// implement filter logic
-			Log.d(TAG, "Perform filtering entered with constraint " + constraint.toString());
-			Log.d(TAG, childData.toString());
-			List<FriendPageGroupItem> groups = (List<FriendPageGroupItem>) filteredData.get(GROUP_KEY);
-			List<FriendPageFriendItem> friends = (List<FriendPageFriendItem>) filteredData.get(FRIEND_KEY);
-			
-			if (constraint == null || constraint.length() == 0)	{
-				results.values = childData;
-				results.count = 2;
-			} else	{
-				// perform filtering; filter through 2 lists, and then join lists again with populate
-				ArrayList<FriendPageGroupItem> filteredGroups = new ArrayList<FriendPageGroupItem>();
-//				for (FriendPageItem g : groups)	{
-//					FriendPageGroupItem groupItem = (FriendPageGroupItem)g;
-//					if (groupItem.getGroupName().toUpperCase().startsWith(constraint.toString().toUpperCase()))
-//						filteredGroups.add(groupItem);
-//				}
-				ArrayList<FriendPageFriendItem> filteredFriends = new ArrayList<FriendPageFriendItem>();
-				for (FriendPageItem f: friends)	{
-					FriendPageFriendItem friendItem = (FriendPageFriendItem) f;
-					if (friendItem.getUserName().toUpperCase().startsWith(constraint.toString().toUpperCase()))
-						filteredFriends.add(friendItem);
-				}
-				Log.d(TAG, "Filtered Friends: " + filteredFriends.toString());
-				HashMap<Integer, List<? extends FriendPageItem>> filteredResults = new HashMap<Integer, List<? extends FriendPageItem>>(); 
-				filteredResults.put(GROUP_KEY, filteredGroups);
-				filteredResults.put(FRIEND_KEY, filteredFriends);
-				results.values = filteredResults;
-				results.count = 2;
-			}
-			return results;
-		}
-
-		@Override
-		protected void publishResults(CharSequence constraint, FilterResults results) {
-			if (results.count == 0)	{
-				friendAdapter.notifyDataSetInvalidated();
-			} else	{
-				HashMap<Integer, List<? extends FriendPageItem>> data = (HashMap<Integer, List<? extends FriendPageItem>>) results.values;
-				if (data.get(FRIEND_KEY).size() != friendAdapter.getChildrenCount(FRIEND_KEY))	{
-					friendAdapter = new ExpandableListAdapter(NewMainActivity.this, headers, data);
-					friendAdapter.setFilter(new FriendPageFilter(childData));
-					expandableListView.setAdapter(friendAdapter);
-					expandableListView.expandGroup(FRIEND_KEY);
-				}
-				
-			}
-		}
-	}
-	
 }

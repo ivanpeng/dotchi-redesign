@@ -137,6 +137,7 @@
    	        android:layout_height="match_parent"
    	        android:layout_alignParentRight="true"
    	        android:layout_marginRight="11dp"
+   	        android:padding="9dp"
    	        android:textOn=""
    	        android:textOff=""
    	        android:background="@drawable/new_invite_add_favourite_toggle" />

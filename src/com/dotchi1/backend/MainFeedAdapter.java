@@ -34,7 +34,7 @@ import com.dotchi1.model.VoteItem;
 
 public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
 
-	private LiteImageLoader imageLoader;
+	private static LiteImageLoader imageLoader;
 	
 	public MainFeedAdapter(Context context, int textViewResourceId,
 			List<BaseFeedData> objects, LiteImageLoader imageLoader) {
@@ -44,13 +44,9 @@ public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		int stubloader = R.drawable.default_profile_pic;
 		final BaseFeedData item = getItem(position);
-		View view = convertView;
-		if (view == null)	{
-			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			view = inflater.inflate(R.layout.main_feed_item, null);
-		}
+		//View view = convertView;
+		View view = makeCommentView(getContext(), item);
 		// Find Views first
 		// Layouts
 		final RelativeLayout imageLayout= (RelativeLayout) view.findViewById(R.id.image_layout);
@@ -59,24 +55,64 @@ public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
 		onClickLayout.setVisibility(View.GONE);
 		imageDetailsLayout.setVisibility(View.VISIBLE);
 
+		Button commentButton = (Button) view.findViewById(R.id.comment_button);
+		Button playButton = (Button) view.findViewById(R.id.play_button);
+		Button detailsButton = (Button) view.findViewById(R.id.details_button);
+		
+		commentButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getContext(), CommentActivity.class);
+				// put extras
+				intent.putExtra("item", item);
+				getContext().startActivity(intent);
+			}
+		});
+		if (item.getIsPlay())	
+			playButton.setVisibility(View.GONE);
+		else	{
+			playButton.setVisibility(View.VISIBLE);
+			playButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(getContext(), GameActivity.class);
+					// put extras
+					intent.putExtra("game_id", item.getGameId());
+					intent.putExtra("game_title", item.getGameTitle());
+					intent.putExtra("dotchi_time", item.getDotchiTime());
+					intent.putExtra("is_personal", item.getIsPersonal());
+					intent.putExtra("is_secret", item.getIsSecret());
+					intent.putExtra("is_official", false);
+					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					((Activity)getContext()).startActivity(intent);
+				}
+			});
+		}
+		detailsButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Intent intent = new Intent(getContext(), EventChoicesActivity.class);
+				intent.putExtra("vote_items", new ArrayList<VoteItem>(item.getVoteItem()));
+				//Toast.makeText(context, "Show Details", Toast.LENGTH_LONG).show();
+				getContext().startActivity(intent);
+			}
+		});
+		return view;
+	}
+	
+	public static View makeCommentView(Context context, BaseFeedData item)	{
+		int stubloader = R.drawable.default_profile_pic;
+
+		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View view = inflater.inflate(R.layout.main_feed_item, null);
 		ImageView headImage = (ImageView) view.findViewById(R.id.main_feed_head);
 		ImageView topPicture = (ImageView) view.findViewById(R.id.top_picture);
 		TextView feedTitle = (TextView) view.findViewById(R.id.feed_title);
 		TextView numberFriends = (TextView) view.findViewById(R.id.number_of_friends);
 		TextView datePosted = (TextView) view.findViewById(R.id.date_posted);
-		
-		Button commentButton = (Button) view.findViewById(R.id.comment_button);
-		Button playButton = (Button) view.findViewById(R.id.play_button);
-		Button detailsButton = (Button) view.findViewById(R.id.details_button);
-		
-//		int height = screenWidth*2/3;
-//		LayoutParams lp = (LayoutParams) imageLayout.getLayoutParams();
-//		lp.height = height;
-//		imageLayout.setLayoutParams(lp);
-//		RelativeLayout relLayout = (RelativeLayout) view.findViewById(R.id.relativeLayout1);
-//		LayoutParams relParams = (LayoutParams) relLayout.getLayoutParams();
-//		relParams.setMargins(-4, height-105, 0, 0);
-		
 		// Populate views
 		//TODO: determine what type of scale the image needs
 		imageLoader.DisplayImage(item.getHeadImage(), headImage);
@@ -90,49 +126,7 @@ public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
 		//numberFriends.setText();
 		datePosted.setText(item.getEventTime());
 		
-		// buttons
-		final Context context = getContext();
-		commentButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(context, CommentActivity.class);
-				// put extras
-				intent.putExtra("item", item);
-				context.startActivity(intent);
-			}
-		});
-		if (item.getIsPlay())	
-			playButton.setVisibility(View.GONE);
-		else	{
-			playButton.setVisibility(View.VISIBLE);
-			playButton.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					Intent intent = new Intent(context, GameActivity.class);
-					// put extras
-					intent.putExtra("game_id", item.getGameId());
-					intent.putExtra("game_title", item.getGameTitle());
-					intent.putExtra("dotchi_time", item.getDotchiTime());
-					intent.putExtra("is_personal", item.getIsPersonal());
-					intent.putExtra("is_secret", item.getIsSecret());
-					intent.putExtra("is_official", false);
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					((Activity)context).startActivity(intent);
-				}
-			});
-		}
-		detailsButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(context, EventChoicesActivity.class);
-				intent.putExtra("vote_items", new ArrayList<VoteItem>(item.getVoteItem()));
-				//Toast.makeText(context, "Show Details", Toast.LENGTH_LONG).show();
-				context.startActivity(intent);
-			}
-		});
+		
 		return view;
 	}
 	
