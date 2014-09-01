@@ -29,53 +29,43 @@
 	            android:id="@+id/photo_roll_list"
 	            android:layout_width="match_parent"
 	            android:layout_height="match_parent"
-	            android:layout_margin="10dp" />
+	            android:layout_margin="2dp" />
 		</RelativeLayout>
+		
         <RelativeLayout
             android:id="@+id/relativeLayout1"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginLeft="-4dp"
-            android:layout_marginTop="125dp" >
+            android:layout_height="105dp"
+            android:layout_width="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true" >
 
-            <de.passsy.holocircularprogressbar.HoloCircularProgressBar
-                android:id="@+id/new_feed_progress"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                app:marker_visible="false"
-                app:progress_background_color="@color/red"
-                app:progress_color="@color/white"
-                app:stroke_width="6dp"
-                app:thumb_visible="false" />
-
-            <com.dotchi1.view.RoundedImageView
+            <com.mikhaellopez.circularimageview.CircularImageView
                 android:id="@+id/new_feed_image"
-                android:layout_width="74dp"
-                android:layout_height="74dp"
-                android:layout_centerInParent="true"
-                android:padding="4dp"
-                android:src="@drawable/default_profile_pic" />
-
-            <ImageView
-                android:id="@+id/mail_notification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:visibility="invisible"
-                android:src="@drawable/mail_notify" />
-
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                android:src="@drawable/default_profile_pic"
+                app:border="true"
+                app:border_color="@color/white"
+                app:border_width="3dp"
+                app:shadow="false" />
+			<TextView
+				android:id="@+id/new_feed_end_time"
+				android:layout_width="match_parent"
+				android:layout_height="25dp"
+				android:layout_below="@+id/new_feed_image"
+				android:layout_alignParentLeft="true"
+				android:ellipsize="none"
+				android:gravity="center"
+				android:maxLines="1"
+				android:text="Posted 2 mins ago"
+				android:textColor="@color/green"
+				android:textSize="12sp" />
         </RelativeLayout>
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="43dp"
             android:layout_below="@+id/photo_roll_container"
             android:layout_marginLeft="90dp"
-            android:layout_marginTop="-10dp"
             android:orientation="horizontal" >
 
             <LinearLayout
@@ -127,20 +117,6 @@
                 android:background="@drawable/new_feed_settings_drawer" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/new_feed_end_time"
-            android:layout_width="68dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="11dp"
-            android:layout_marginTop="-5dp"
-            android:layout_below="@+id/relativeLayout1"
-            android:gravity="center"
-            android:text="Time Remaining"
-            android:textColor="#B5B5B6"
-            android:textSize="10.5sp" />
-
     </RelativeLayout>
-
-
 
 </LinearLayout>

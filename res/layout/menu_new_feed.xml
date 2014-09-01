@@ -21,14 +21,9 @@
 	    android:textStyle="bold"
 	    android:gravity="center"
 	    android:text="個人動態"
+	    android:layout_marginRight="35dp"
 	    android:textSize="16sp" />
 	
-	<ImageView 
-	    android:id="@+id/menu_friends_drawer"
-	    android:layout_width="wrap_content"
-	    android:layout_height="match_parent"
-	    android:layout_marginRight="5dp"
-	    android:layout_marginLeft="5dp"
-	    android:src="@drawable/new_feed_friends_button" />
+	
 	
 </LinearLayout>

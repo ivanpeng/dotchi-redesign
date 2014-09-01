@@ -31,6 +31,7 @@ import com.dotchi1.image.LiteImageLoader;
 import com.dotchi1.model.BaseFeedData;
 import com.dotchi1.model.GameCardItem;
 import com.dotchi1.model.VoteItem;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
 
@@ -105,17 +106,19 @@ public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
 	
 	public static View makeCommentView(Context context, BaseFeedData item)	{
 		int stubloader = R.drawable.default_profile_pic;
-
+		if (imageLoader == null)	{
+			imageLoader = new LiteImageLoader(context);
+		}
 		LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View view = inflater.inflate(R.layout.main_feed_item, null);
-		ImageView headImage = (ImageView) view.findViewById(R.id.main_feed_head);
+		//ImageView headImage = (ImageView) view.findViewById(R.id.main_feed_head);
 		ImageView topPicture = (ImageView) view.findViewById(R.id.top_picture);
 		TextView feedTitle = (TextView) view.findViewById(R.id.feed_title);
 		TextView numberFriends = (TextView) view.findViewById(R.id.number_of_friends);
 		TextView datePosted = (TextView) view.findViewById(R.id.date_posted);
 		// Populate views
 		//TODO: determine what type of scale the image needs
-		imageLoader.DisplayImage(item.getHeadImage(), headImage);
+		//imageLoader.DisplayImage(item.getHeadImage(), headImage);
 		List<VoteItem> voteItems = item.getVoteItem();
 		if (voteItems != null && voteItems.size() > 0)
 			imageLoader.DisplayImage(voteItems.get(0).getItemImage(), topPicture);
@@ -123,8 +126,9 @@ public class MainFeedAdapter extends ArrayAdapter<BaseFeedData>{
 			topPicture.setImageResource(stubloader);
 		// Set titles 
 		feedTitle.setText(item.getGameTitle());
-		//numberFriends.setText();
+		numberFriends.setText(item.getEventTitle());
 		datePosted.setText(item.getEventTime());
+		//eventTime.setText(item.getEventTime());
 		
 		
 		return view;

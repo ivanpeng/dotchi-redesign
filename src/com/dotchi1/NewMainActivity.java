@@ -2,7 +2,6 @@ package com.dotchi1;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import org.codehaus.jackson.JsonParseException;
@@ -23,11 +22,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -37,32 +34,23 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.TranslateAnimation;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.ExpandableListView;
-import android.widget.ExpandableListView.OnChildClickListener;
-import android.widget.Filter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ToggleButton;
 
-import com.dotchi1.backend.ExpandableListAdapter;
 import com.dotchi1.backend.MainFeedAdapter;
 import com.dotchi1.backend.PostUrlTask;
 import com.dotchi1.image.LiteImageLoader;
 import com.dotchi1.model.BaseFeedData;
-import com.dotchi1.model.FriendPageFriendItem;
-import com.dotchi1.model.FriendPageGroupItem;
-import com.dotchi1.model.FriendPageItem;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-import com.larswerkman.quickreturnlistview.QuickReturnListView;
 
 @SuppressWarnings("unused")
 public class NewMainActivity extends ActionBarActivity implements OnRefreshListener{
@@ -75,6 +63,8 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 	public static final int CREATE_GROUP_REQ_CODE = 10000;
 	public static final int FINAL_DECISION_REQ_CODE = 10001;
 	private static final int UPDATE_COUNT = 10;
+	
+	private SwipeRefreshLayout swipeLayout;
 	
 	private int screenWidth;
 	private String dotchiId;
@@ -131,6 +121,13 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		final String rootUrl = getResources().getString(R.string.api_test_root_url);
 		
+		swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swiping_container);
+        swipeLayout.setOnRefreshListener(this);
+        swipeLayout.setColorScheme(android.R.color.holo_blue_bright, 
+                android.R.color.holo_green_light, 
+                android.R.color.holo_orange_light, 
+                android.R.color.holo_red_light);
+		
 		Display d = getWindowManager().getDefaultDisplay();
 		Point p = new Point();
 		d.getSize(p);
@@ -146,15 +143,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
         slidingMenu.setFadeDegree(0.35f);
 	   	slidingMenu.setMenu(R.layout.activity_test);
 	   	slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-//	   	slidingMenu.setSecondaryMenu(R.layout.new_friend_list);
 
-//	   	swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-//	   	swipeLayout.setOnRefreshListener(this);
-//        swipeLayout.setColorScheme(android.R.color.holo_blue_bright, 
-//                android.R.color.holo_green_light, 
-//                android.R.color.holo_orange_light, 
-//                android.R.color.holo_red_light);
-	   	
 		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
 			new GetHomeFeedTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootUrl + "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", "0");
 		} else {
@@ -162,25 +151,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 		}
 
 		View actionbar = inflater.inflate(R.layout.menu_new_feed, null);
-		final TextView title = (TextView)actionbar.findViewById(R.id.menu_new_feed_title);
-		title.setOnClickListener(new OnClickListener(){
 
-			@Override
-			public void onClick(View view) {
-				isFriendState = !isFriendState;
-				String code;
-				if (isFriendState)	{
-					code = "1";
-					title.setText("朋友動態");
-				}
-				else	{
-					code = "0";
-					title.setText("個人動態");
-				}
-				new GetHomeFeedTask().execute(rootUrl +  "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", code);
-			}
-			
-		});
 		ImageView navigationDrawer = (ImageView) actionbar.findViewById(R.id.menu_settings_drawer);
 		navigationDrawer.setOnClickListener(new OnClickListener() {
 			@Override
@@ -189,7 +160,6 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 			}
 		});
 		
-
 		getSupportActionBar().setCustomView(actionbar);
 	    getSupportActionBar().setDisplayShowTitleEnabled(false);
 	    getSupportActionBar().setDisplayShowCustomEnabled(true);
@@ -204,10 +174,18 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 		mPlaceHolder = mHeader.findViewById(R.id.placeholder);
 		listView = (ListView) findViewById(R.id.feed_list);
 		
-	    //String rootUrl = getResources().getString(R.string.api_test_root_url);
-		//SharedPreferences preferences = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE);
-
-		
+		RelativeLayout arrangeMeeting = (RelativeLayout) findViewById(R.id.arrange_meeting);
+		arrangeMeeting.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// Start CreateGameFirstActivity
+				String dotchiType = "0";
+				Intent intent = new Intent(NewMainActivity.this, CreateGameFirstActivity.class);
+				intent.putExtra("dotchiType", dotchiType);
+				startActivity(intent);
+			}
+		});
 	}//end of onCreate()
 	
 	
@@ -262,13 +240,17 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 		super.onDestroy();
 	}
 	
-	@Override public void onRefresh() {
-		/*swipeLayout.setRefreshing(true);
+	@Override 
+	public void onRefresh() {
+		swipeLayout.setRefreshing(true);
+		final String rootUrl = getResources().getString(R.string.api_test_root_url);
+		new GetHomeFeedTask().execute(rootUrl +  "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", "0");
+
         new Handler().postDelayed(new Runnable() {
             @Override public void run() {
                 swipeLayout.setRefreshing(false);
             }
-        }, 2000);*/
+        }, 2000);
     }
 	
 	public ArrayList<BaseFeedData> processJson(String json)	{
@@ -317,9 +299,9 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 				newItems.add(item);
 				Log.d(TAG,"adding new item.");
 			}
-			if (newItems.size() > 0)	{
-				oldData.addAll(0, newItems);
-			}
+		}
+		if (newItems.size() > 0)	{
+			oldData.addAll(0, newItems);
 		}
 		return oldData;
 	}
@@ -344,6 +326,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 
 		@Override
 		protected void onPostExecute(String result) {
+			swipeLayout.setRefreshing(false);
 			result = processResult(result);
 			// Check preferences; if not there, save!
 			SharedPreferences preferences = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE);
@@ -390,6 +373,27 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 									Log.d(TAG, "Item View unselected");
 								}
 							}
+						}
+					});
+					listView.setOnScrollListener(new OnScrollListener() {
+						
+						@Override
+						public void onScrollStateChanged(AbsListView view, int scrollState) {
+						}
+						
+						@Override
+						public void onScroll(AbsListView view, int firstVisibleItem,
+								int visibleItemCount, int totalItemCount) {
+							boolean enable = false;
+							if (listView != null && listView.getChildCount() > 0)	{
+								// check if the first item of the list is visible
+					            boolean firstItemVisible = listView.getFirstVisiblePosition() == 0;
+					            // check if the top of the first item is visible
+					            boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
+					            // enabling or disabling the refresh layout
+					            enable = firstItemVisible && topOfFirstItemVisible;		
+							}
+							swipeLayout.setEnabled(enable);
 						}
 					});
 				} else	{

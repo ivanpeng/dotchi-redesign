@@ -42,7 +42,7 @@ public class LiteImageLoader {
         executorService=Executors.newFixedThreadPool(5);
     }
   
-    int stub_id = R.drawable.default_profile_pic;
+    int stub_id = R.drawable.photo_roll_default;
     
     public void DisplayImage(String url, ImageView imageView)	{
     	DisplayImage(url, stub_id, imageView, 250);

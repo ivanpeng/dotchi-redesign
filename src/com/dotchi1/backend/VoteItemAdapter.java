@@ -8,14 +8,13 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.dotchi1.R;
 import com.dotchi1.image.LiteImageLoader;
 import com.dotchi1.model.VoteItem;
 import com.dotchi1.model.VoteItem.MedalType;
-
-import de.passsy.holocircularprogressbar.HoloCircularProgressBar;
 
 /**
  * May need to put in another class.
@@ -24,7 +23,7 @@ import de.passsy.holocircularprogressbar.HoloCircularProgressBar;
  */
 public class VoteItemAdapter extends ViewPagerAdapter	{
 
-	private static final int VOTE_ITEM_ADAPTER_IMAGE_SIZE = 150;
+	private static final int VOTE_ITEM_ADAPTER_IMAGE_SIZE = 250;
 	
 	private Context context;
 	private ArrayList<VoteItem> objects;
@@ -52,18 +51,8 @@ public class VoteItemAdapter extends ViewPagerAdapter	{
 		}
 		VoteItem vItem = objects.get(position);
 		// Populate
-		//TODO need to crop imageView to 4:3
 		ImageView photo = (ImageView) view.findViewById(R.id.photo_image);
-		imageLoader.DisplayImage(vItem.getItemImage(), R.drawable.default_profile_pic, photo, VOTE_ITEM_ADAPTER_IMAGE_SIZE);
-		ImageView medal = (ImageView) view.findViewById(R.id.top_choice_symbol);
-		if (vItem.getMedals() == MedalType.NONE)	
-			medal.setVisibility(View.INVISIBLE);
-		else if (vItem.getMedals() == MedalType.GOLD)	
-			medal.setImageResource(R.drawable.new_gold);
-		else if (vItem.getMedals() == MedalType.SILVER)
-			medal.setImageResource(R.drawable.new_silver);
-		else // medal is copper
-			medal.setImageResource(R.drawable.new_bronze);
+		imageLoader.DisplayImage(vItem.getItemImage(), R.drawable.photo_roll_default, photo, VOTE_ITEM_ADAPTER_IMAGE_SIZE);
 		
 		TextView photoTitle = (TextView) view.findViewById(R.id.photo_roll_title);
 		photoTitle.setText(vItem.getItemTitle());
@@ -71,10 +60,16 @@ public class VoteItemAdapter extends ViewPagerAdapter	{
 		TextView photoDescription = (TextView) view.findViewById(R.id.photo_description);
 		photoDescription.setText(vItem.getItemContent());
 		
-		HoloCircularProgressBar voteBar = (HoloCircularProgressBar) view.findViewById(R.id.photo_tickets_progress);
-		voteBar.setProgress((float)(vItem.getPercent()/100.0f));
-		TextView voteCount = (TextView) view.findViewById(R.id.photo_num_tickets);
-		voteCount.setText(String.valueOf(vItem.getVotes()) + " 票");
+		ProgressBar voteBar = (ProgressBar) view.findViewById(R.id.photo_tickets_progress);
+		voteBar.setProgress((int)vItem.getPercent());
+		
+		TextView voteBarText = (TextView) view.findViewById(R.id.photo_tickets_progress_text);
+		voteBarText.setText(String.valueOf((int)vItem.getPercent()) + "%");
+		
+		TextView fractionText = (TextView) view.findViewById(R.id.photo_fraction);
+		String fraction = String.valueOf(position+1) + "/" + String.valueOf(objects.size());
+		fractionText.setText(fraction);
+		
 		return view;
 	}
 

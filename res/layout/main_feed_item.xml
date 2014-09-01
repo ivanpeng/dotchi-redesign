@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res/com.dotchi1"
     android:layout_width="match_parent"
-    android:layout_height="300dp" >
+    android:layout_height="330dp" >
     
     <!-- Main feed page first -->
     <RelativeLayout 
@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="250dp">
         
-        <ImageView 
+        <ImageView
             android:id="@+id/top_picture"
             android:layout_width="match_parent"
             android:layout_height="250dp"
@@ -72,6 +72,7 @@
                 android:gravity="center"
                 android:text="posted 0 days ago" />
         </LinearLayout>
+
     </RelativeLayout>
     
     <RelativeLayout
@@ -117,49 +118,5 @@
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="vertical" 
-        android:layout_alignParentBottom="true"
-        android:paddingLeft="90dp"
-        android:paddingTop="5dp" >
-        
-        <TextView
-            android:id="@+id/game_title"
-            android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:textColor="#4D4D4D"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:text="Blah" />
-        
-        <TextView
-            android:id="@+id/game_description"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:textSize="16sp"
-            android:textColor="#4D4D4D"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:text="Description" />
-        
-    </LinearLayout>
-    
-        
-    <com.mikhaellopez.circularimageview.CircularImageView
-        android:id="@+id/main_feed_head"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginBottom="10dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        app:border="true"
-        app:border_color="@color/white"
-        app:border_width="4dp"
-        app:shadow="false"
-        android:src="@drawable/default_profile_pic" />
     
 </RelativeLayout>

@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Handler;
@@ -18,26 +17,22 @@ import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.devsmart.android.ui.HorizontalListView;
-import com.dotchi1.FinalChoiceActivity;
-import com.dotchi1.NewMainActivity;
 import com.dotchi1.R;
 import com.dotchi1.image.LiteImageLoader;
 import com.dotchi1.model.BaseFeedData;
-import com.dotchi1.model.VoteItem;
-
-import de.passsy.holocircularprogressbar.HoloCircularProgressBar;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 
@@ -173,15 +168,12 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 			screenWidth = p.x;
 		}
 		ViewHolder holder = new ViewHolder();
-		holder.profilePicture = (ImageView) view.findViewById(R.id.new_feed_image);
+		holder.profilePicture = (CircularImageView) view.findViewById(R.id.new_feed_image);
 		holder.title = (TextView) view.findViewById(R.id.new_feed_event_title);
 		holder.timeRemainingView = (TextView) view.findViewById(R.id.new_feed_end_time);
 		holder.descriptionView = (TextView) view.findViewById(R.id.new_feed_description);
 		holder.keyView = view.findViewById(R.id.new_feed_is_secret_image);
 		holder.photoRoll = (ViewPager) view.findViewById(R.id.photo_roll_list);
-		holder.notifyImage = (ImageView) view.findViewById(R.id.mail_notification);
-		holder.endTimeProgressBar = (HoloCircularProgressBar) view.findViewById(R.id.new_feed_progress);
-
 		holder.settingsLayout = (Spinner) view.findViewById(R.id.new_feed_settings_drawer);
 		return holder;
 	}
@@ -223,40 +215,9 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 		LayoutParams lp = (LayoutParams) layoutContainer.getLayoutParams();
 		lp.height = height;
 		layoutContainer.setLayoutParams(lp);
-		RelativeLayout relLayout = (RelativeLayout) view.findViewById(R.id.relativeLayout1);
+		RelativeLayout relLayout = (RelativeLayout)view.findViewById(R.id.relativeLayout1);
 		LayoutParams relParams = (LayoutParams) relLayout.getLayoutParams();
-		relParams.setMargins(-4, height-105, 0, 0);
-		
-		if (item.getCategory() == 0)
-			holder.endTimeProgressBar.setProgressBackgroundColor(Color.RED);
-		else if (item.getCategory() == 1)
-			holder.endTimeProgressBar.setProgressBackgroundColor(Color.YELLOW);
-		else
-			holder.endTimeProgressBar.setProgressBackgroundColor(Color.WHITE);
-		// set progress
-		int endTime = "".equals(item.getEndTime())? 0 : Integer.parseInt(item.getEndTime());
-		holder.endTimeProgressBar.setProgress( (float)((TOTAL_DAYS-endTime)/(float)TOTAL_DAYS));
-		
-
-		if (item.getCategory() == 2 && item.getDotchiType() == 0 && item.getIsSendJoin() == false && item.getIsSendJoinNotice() == true)	{
-			holder.notifyImage.setVisibility(View.VISIBLE);
-			// set onclick listener for this item;
-			holder.notifyImage.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					// Start activity to choose data;
-					// Remember to send all data for the grid!
-					Intent intent = new Intent(context, FinalChoiceActivity.class);
-					if (item.getVoteItem() != null && item.getVoteItem().size() > 0)
-						intent.putExtra("choices", new ArrayList<VoteItem>(item.getVoteItem()));
-					((Activity)context).startActivityForResult(intent, NewMainActivity.FINAL_DECISION_REQ_CODE);
-				}
-			});
-		}
-		else
-			holder.notifyImage.setVisibility(View.GONE);
-		
+		relParams.setMargins(0, height-105, 0, 0);
 		
 	}
 	
@@ -298,15 +259,12 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 	
 	
 	public static class ViewHolder	{
-		ImageView profilePicture;
+		CircularImageView profilePicture;
 		TextView title;
 		TextView timeRemainingView;
 		TextView descriptionView;
 		View keyView;
 		ViewPager photoRoll;
-		HorizontalListView moodListView;
-		ImageView notifyImage;
-		HoloCircularProgressBar endTimeProgressBar;
 
 		Spinner settingsLayout;
 		
