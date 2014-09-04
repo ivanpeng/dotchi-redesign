@@ -8,14 +8,32 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="19" />
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.CAMERA" />
 
     <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- GCM requires a Google account. -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <!-- This app has permission to register and receive data message. -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <!-- Network State Permissions to detect Internet status -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Permission to vibrate -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!--
+    Creates a custom permission so only this app can receive its messages. 
+    <permission
+        android:name="com.androidhive.pushnotifications.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.androidhive.pushnotifications.permission.C2D_MESSAGE" />
+    -->
 
     <application
         android:allowBackup="true"
@@ -141,7 +159,7 @@
         <activity
             android:name="com.dotchi1.CreateGameFirstActivity"
             android:label="@string/title_activity_create_game_first"
-            android:windowSoftInputMode="stateHidden|adjustResize"  >
+            android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
         <activity
             android:name="com.dotchi1.CreateGameItemsActivity"
@@ -152,6 +170,26 @@
             android:label="@string/title_activity_select_package" >
         </activity>
 
+        <receiver
+            android:name="com.google.android.gcm.GCMBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+
+                <!-- Receives the actual messages. -->
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <!-- Receives the registration id. -->
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+                <category android:name="com.androidhive.pushnotifications" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.dotchi1.GCMIntentService" />
+
+        <activity
+            android:name="com.dotchi1.GCMActivity"
+            android:label="@string/title_activity_gcm" >
+        </activity>
     </application>
 
 </manifest>
