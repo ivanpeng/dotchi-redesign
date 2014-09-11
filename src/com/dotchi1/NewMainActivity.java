@@ -1,95 +1,49 @@
 package com.dotchi1;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.PropertyNamingStrategy;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.graphics.Point;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.view.animation.TranslateAnimation;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-import com.dotchi1.backend.MainFeedAdapter;
-import com.dotchi1.backend.PostUrlTask;
-import com.dotchi1.image.LiteImageLoader;
-import com.dotchi1.model.BaseFeedData;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 @SuppressWarnings("unused")
-public class NewMainActivity extends ActionBarActivity implements OnRefreshListener{
+public class NewMainActivity extends ActionBarActivity {
 	
 	public static final String TAG = "NewMainActivity";
-	public static final String HOME_FEED_JSON_KEY = "HOME_FEED_JSON";
-	public static final String HOME_FEED_JSON_VALUE = "HOME_FEED_JSON_VALUE";
-
+	
+	private static final int[] bottomIds = {R.id.new_home_feed_button, R.id.new_invite_friends_button, 
+			R.id.new_messages_button, R.id.new_dotchi_package_button};
+	private static final Class<?>[] fragmentClasses = {NewFeedFragment.class, NewInviteFriendsFragment.class,
+			NewNotificationsFragment.class, NewDotchiPackageSelectFragment.class};
+	private int selectedBottomIndex = 0;
+	
 	public static final int MAIN_ACTIVITY_REQ_CODE = 100;
 	public static final int CREATE_GROUP_REQ_CODE = 10000;
 	public static final int FINAL_DECISION_REQ_CODE = 10001;
 	private static final int UPDATE_COUNT = 10;
 	
-	private SwipeRefreshLayout swipeLayout;
+	private static FragmentManager mFragmentManager;
 	
-	private int screenWidth;
 	private String dotchiId;
-	//private SwipeRefreshLayout swipeLayout;
 	
-	private View mHeader;
-	private ListView listView;
-	private LinearLayout mQuickReturnView;
-	private View mPlaceHolder;
-	private int mCachedVerticalScrollRange;
-	private int mQuickReturnHeight;
+	
 	
 	private SlidingMenu slidingMenu;
-	
-	private static final int STATE_ONSCREEN = 0;
-	private static final int STATE_OFFSCREEN = 1;
-	private static final int STATE_RETURNING = 2;
-	private int mState = STATE_ONSCREEN;
-	private int mScrollY;
-	private int mMinRawY = 0;
-	private TranslateAnimation anim;
-	
-	private boolean isFriendState = false;
-	private MainFeedAdapter adapter;
-	private ArrayList<BaseFeedData> feedData;
+
 	
 	public void setupUI(View view) {
 	    //Set up touch listener for non-text box views to hide keyboard.
@@ -114,41 +68,20 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		SharedPreferences preferences = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE);
-		dotchiId = preferences.getString("DOTCHI_ID", "35");
 		setContentView(R.layout.activity_home_feed);
-		setupUI(findViewById(R.id.home_feed_container));
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		final String rootUrl = getResources().getString(R.string.api_test_root_url);
+		LayoutInflater inflater = getLayoutInflater();
 		
-		swipeLayout = (SwipeRefreshLayout) findViewById(R.id.swiping_container);
-        swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setColorScheme(android.R.color.holo_blue_bright, 
-                android.R.color.holo_green_light, 
-                android.R.color.holo_orange_light, 
-                android.R.color.holo_red_light);
-		
-		Display d = getWindowManager().getDefaultDisplay();
-		Point p = new Point();
-		d.getSize(p);
-		screenWidth = p.x;
+		mFragmentManager = getSupportFragmentManager();
+
 	   	slidingMenu = new SlidingMenu(this);
 	   	slidingMenu.setMode(SlidingMenu.LEFT);
 	   	slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_NONE);
-//	   	slidingMenu.setMode(SlidingMenu.LEFT_RIGHT);
-//	   	slidingMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
 	   	slidingMenu.setShadowWidthRes(R.dimen.shadow_width);
         slidingMenu.setShadowDrawable(R.drawable.shadow);
         slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         slidingMenu.setFadeDegree(0.35f);
 	   	slidingMenu.setMenu(R.layout.activity_test);
 	   	slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-
-		if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
-			new GetHomeFeedTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, rootUrl + "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", "0");
-		} else {
-			new GetHomeFeedTask().execute(rootUrl + "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", "0");
-		}
 
 		View actionbar = inflater.inflate(R.layout.menu_new_feed, null);
 
@@ -165,16 +98,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 	    getSupportActionBar().setDisplayShowCustomEnabled(true);
 	   	getSupportActionBar().setDisplayShowHomeEnabled(false);
 		
-	   	// Set footer
-	   	View homeFeedView = findViewById(R.id.new_home_feed_button);
-	   	homeFeedView.setSelected(true);
-	   	
-		mHeader = inflater.inflate(R.layout.header, null);
-		mQuickReturnView = (LinearLayout) findViewById(R.id.header);
-		mPlaceHolder = mHeader.findViewById(R.id.placeholder);
-		listView = (ListView) findViewById(R.id.feed_list);
-		
-		RelativeLayout arrangeMeeting = (RelativeLayout) findViewById(R.id.arrange_meeting);
+	   	RelativeLayout arrangeMeeting = (RelativeLayout) findViewById(R.id.arrange_meeting);
 		arrangeMeeting.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -186,6 +110,24 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 				startActivity(intent);
 			}
 		});
+	   	
+	   	// Set footer
+	   	for (int i = 0; i < bottomIds.length; i++)	{
+	   		View v = findViewById(bottomIds[i]);
+	   		v.setOnClickListener(new BottomFeedOnClickListener());
+	   	}
+	   	// Set bottom view
+	   	View bottomSelectedView = findViewById(bottomIds[selectedBottomIndex]);
+	   	bottomSelectedView.setSelected(true);
+	   	bottomSelectedView.setOnClickListener(new BottomFeedOnClickListener());
+	   	try {
+	   		switchFragment(NewFeedFragment.class, R.id.fragment_container,null);
+	   	} catch (OutOfMemoryError e) {
+	   		e.printStackTrace();
+	   	} catch (Exception e) {
+	   		e.printStackTrace();
+	   	}
+	   	
 	}//end of onCreate()
 	
 	
@@ -219,12 +161,7 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 	 * */
 	@Override
 	public void onStop() {		
-		// We want to delete the JSON saved in sharedPreferences so we can grab it every time on start up, but nothing else.
-		SharedPreferences preferences = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE);
-		Editor editor = preferences.edit();
-		editor.putBoolean(HOME_FEED_JSON_KEY, false);
-		editor.remove(HOME_FEED_JSON_VALUE);
-		editor.commit();
+
 	    super.onStop();
 	    // The rest of your onStop() code.
 	    // ..
@@ -240,78 +177,44 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 		super.onDestroy();
 	}
 	
-	@Override 
-	public void onRefresh() {
-		swipeLayout.setRefreshing(true);
-		final String rootUrl = getResources().getString(R.string.api_test_root_url);
-		new GetHomeFeedTask().execute(rootUrl +  "/activity/get_activity_msg", "dotchi_id", dotchiId, "activity_type", "0");
-
-        new Handler().postDelayed(new Runnable() {
-            @Override public void run() {
-                swipeLayout.setRefreshing(false);
-            }
-        }, 2000);
-    }
-	
-	public ArrayList<BaseFeedData> processJson(String json)	{
-		ArrayList<BaseFeedData> objects = new ArrayList<BaseFeedData>();
-		try {
-			JSONArray ja = new JSONObject(json).getJSONArray("data");
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
-			mapper.configure(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-			mapper.configure(DeserializationConfig.Feature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-			objects = mapper.readValue(ja.toString(), mapper.getTypeFactory().constructCollectionType(ArrayList.class, BaseFeedData.class));
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return objects;
-	}
 	/**
-	 * This function compares the new incoming JSON, and sees if it's any different. If it is, we update the array list, do it in such a manner 
-	 * that we don't reset the adapter.
-	 * TODO: we just keep adding to new data. we don't remove if the old list has something new list doesn't have. While that's not very important
-	 * because we reset this process after every destroy, we should still do it eventually.
-	 * @param oldData
-	 * @param newData
-	 * @return
+	 * @author William
+	 * @param mFragmentClass 
+	 * @param continer (res R.id)
+	 * @param bundle
+	 * @throws Out of memory error
+	 * @throws Exception 
 	 */
-	public ArrayList<BaseFeedData> compareResults(ArrayList<BaseFeedData> oldData, ArrayList<BaseFeedData> newData)	{
-		List<BaseFeedData> newItems = new ArrayList<BaseFeedData>();
-		for (int i = 0; i < newData.size(); i++)	{
-			BaseFeedData item = newData.get(i);
-			if (oldData.contains(item))	{
-				// Contains is based off the equals() function. That's set in BaseFeedData to be very loose.
-				// TODO: Update the item with a strong equals, if necessary
-				// For now, we can just find the item and call a set
-				int oldIndex = oldData.indexOf(item);
-				Log.d(TAG, "new index: " + i + ", old index: " + oldIndex);
-				oldData.set(oldIndex, item);
-			} else {
-				// New data is not in old data; NOT other way
-				// Instead of adding one by one, we add to a secondary list, and then addAll at beginning. This maintains order.
-				newItems.add(item);
-				Log.d(TAG,"adding new item.");
+	private static void switchFragment(Class<?> mFragmentClass,int container, Bundle bundle)throws OutOfMemoryError,Exception  {
+		Log.d(TAG,"+++ Switch Fragment Page +++");
+		FragmentTransaction ft = mFragmentManager.beginTransaction();
+		try {
+			Fragment fragment = (Fragment) mFragmentClass.newInstance();
+			if (null != bundle) {
+				fragment.setArguments(bundle);
 			}
-		}
-		if (newItems.size() > 0)	{
-			oldData.addAll(0, newItems);
-		}
-		return oldData;
-	}
+			ft.replace(container, fragment);
+			ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+			//ft.addToBackStack(null);
+			ft.commit();
+		}catch (Exception e) {
+			e.printStackTrace();
+			Log.e(TAG,"Something wrong with fragment ...");
+			throw e;
+		}catch (OutOfMemoryError error) {
+			Log.e(TAG,"Out of memory error ...");
+			throw error;
+        }
+		Log.d(TAG,"--- Switch Fragment Page ---");
+	}//end of switchFragmentPage
+
+	
+	
+	
 	
 	@Override
 	protected void onActivityResult(int requestCode, int responseCode, Intent data) {
 		if (requestCode == CommentActivity.COMMENT_ACTIVITY_REQ_CODE)	{
-			//String moodCount = data.getStringExtra("mood_count");
-			// How do we access the adapter to update the data;
-			adapter.notifyDataSetChanged();
 			super.onActivityResult(requestCode, responseCode, data);
 		} else if (requestCode == CREATE_GROUP_REQ_CODE)	{
 			// Add group; either pull again, or just notify data set changed
@@ -320,99 +223,33 @@ public class NewMainActivity extends ActionBarActivity implements OnRefreshListe
 			super.onActivityResult(requestCode, responseCode, data);
 	}
 
-
-	
-	class GetHomeFeedTask extends PostUrlTask	{
+	class BottomFeedOnClickListener implements OnClickListener	{
 
 		@Override
-		protected void onPostExecute(String result) {
-			swipeLayout.setRefreshing(false);
-			result = processResult(result);
-			// Check preferences; if not there, save!
-			SharedPreferences preferences = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE);
-			boolean isJsonSaved = preferences.getBoolean(HOME_FEED_JSON_KEY, false);
-			if (!isJsonSaved)	{
-				Editor editor = preferences.edit();
-				editor.putBoolean(HOME_FEED_JSON_KEY, true);
-				editor.putString(HOME_FEED_JSON_VALUE, result);
-				editor.commit();
-				// Now call process and set adapter
-				feedData = processJson(result);
-				if (feedData != null && feedData.size() > 0)	{
-					//adapter = new NewFeedAdapter(NewMainActivity.this, R.layout.new_feed_item, feedData, screenWidth);
-					adapter = new MainFeedAdapter(NewMainActivity.this, 0, feedData, new LiteImageLoader(getApplicationContext()));
-					listView.setAdapter(adapter);
-					//Set OnItemClickListener
-					listView.setOnItemClickListener(new OnItemClickListener() {
-
-						@Override
-						public void onItemClick(AdapterView<?> parent, View view,
-								int position, long id) {
-							RelativeLayout imageLayout = (RelativeLayout) view.findViewById(R.id.image_layout);
-							final RelativeLayout onClickLayout = (RelativeLayout) view.findViewById(R.id.on_click_layout);
-							final LinearLayout imageDetailsLayout = (LinearLayout) view.findViewById(R.id.image_details_layout);
-							if (onClickLayout != null)	{
-								view.setSelected(!view.isSelected());
-								if (view.isSelected())	{
-									// add mask, disappear textView Layout
-									onClickLayout.setVisibility(View.VISIBLE);
-									imageDetailsLayout.setVisibility(View.GONE);
-									Log.d(TAG, "Item View Selected");
-									onClickLayout.setOnClickListener(new OnClickListener() {
-										
-										@Override
-										public void onClick(View v) {
-											v.setSelected(false);
-											onClickLayout.setVisibility(View.GONE);
-											imageDetailsLayout.setVisibility(View.VISIBLE);
-										}
-									});
-								} else	{
-									onClickLayout.setVisibility(View.GONE);
-									imageDetailsLayout.setVisibility(View.VISIBLE);
-									Log.d(TAG, "Item View unselected");
-								}
-							}
-						}
-					});
-					listView.setOnScrollListener(new OnScrollListener() {
-						
-						@Override
-						public void onScrollStateChanged(AbsListView view, int scrollState) {
-						}
-						
-						@Override
-						public void onScroll(AbsListView view, int firstVisibleItem,
-								int visibleItemCount, int totalItemCount) {
-							boolean enable = false;
-							if (listView != null && listView.getChildCount() > 0)	{
-								// check if the first item of the list is visible
-					            boolean firstItemVisible = listView.getFirstVisiblePosition() == 0;
-					            // check if the top of the first item is visible
-					            boolean topOfFirstItemVisible = listView.getChildAt(0).getTop() == 0;
-					            // enabling or disabling the refresh layout
-					            enable = firstItemVisible && topOfFirstItemVisible;		
-							}
-							swipeLayout.setEnabled(enable);
-						}
-					});
-				} else	{
-					listView.setAdapter(null);
-					TextView empty = (TextView) findViewById(R.id.empty_view);
-					empty.setVisibility(View.VISIBLE);
-				}
-				
-			} else 	{
-				Log.d(TAG, "JSON already saved, we compare and process new results.");
-				// Here, we don't reset the adapter. Just compare and see what differences 
-				ArrayList<BaseFeedData> newData = processJson(result);
-				if (feedData != null){
-					feedData = compareResults(feedData, newData);
-					adapter.notifyDataSetChanged();
-					Log.d(TAG, "List comparison from previous is different. Notifying dataset updated instead of pushing for update");
+		public void onClick(View v) {
+			// Find which index was selected
+			for (int i = 0; i < bottomIds.length; i++)	{
+				if (v.getId() == bottomIds[i])	{
+					selectedBottomIndex = i;
+					break;
 				}
 			}
-			
+			for (int i = 0; i < bottomIds.length; i++)	{
+				View view = findViewById(bottomIds[i]);
+				view.setSelected(false);
+			}
+			v.setSelected(true);
+			// TODO: Switch fragment
+			try {
+				switchFragment(fragmentClasses[selectedBottomIndex], R.id.fragment_container, null);
+			} catch (OutOfMemoryError e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
+		
 	}
+	
+	
 }

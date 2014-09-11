@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/swiping_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+	<FrameLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent">
+
+	    <TextView
+	        android:id="@+id/empty_view"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:gravity="center"
+	        android:text="No results found."
+	        android:visibility="invisible" />
+
+	    <ListView
+	        android:id="@+id/feed_list"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:layout_marginLeft="2dp"
+	        android:layout_marginRight="2dp"
+	        android:layout_marginTop="2dp"
+	        android:divider="@drawable/new_feed_background"
+	        android:dividerHeight="2dp" />
+	</FrameLayout>>
+</android.support.v4.widget.SwipeRefreshLayout>
