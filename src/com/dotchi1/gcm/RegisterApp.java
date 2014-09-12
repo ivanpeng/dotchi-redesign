@@ -15,7 +15,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.dotchi1.MainActivity;
+import com.dotchi1.NewMainActivity;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class RegisterApp extends AsyncTask<Void, Void, String> {
@@ -71,7 +71,7 @@ public class RegisterApp extends AsyncTask<Void, Void, String> {
 	}
 
 	private void storeRegistrationId(Context ctx, String regid) {
-		final SharedPreferences prefs = ctx.getSharedPreferences(MainActivity.class.getSimpleName(),
+		final SharedPreferences prefs = ctx.getSharedPreferences(NewMainActivity.class.getSimpleName(),
 				Context.MODE_PRIVATE);
 		Log.i(TAG, "Saving regId on app version " + appVersion);
 		SharedPreferences.Editor editor = prefs.edit();

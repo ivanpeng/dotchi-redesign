@@ -60,11 +60,6 @@
             android:name="com.facebook.LoginActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.dotchi1.MainActivity"
-            android:label="@string/title_activity_main"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name="com.dotchi1.FriendSelectActivity"
             android:label="@string/title_activity_friend_select"
             android:screenOrientation="portrait" >

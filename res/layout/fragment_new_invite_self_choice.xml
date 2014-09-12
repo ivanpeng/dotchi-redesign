@@ -92,7 +92,7 @@
 	   	    android:layout_marginTop="8dp"
 	   	    android:layout_centerInParent="true" >
 	   	    
-		    <com.devsmart.android.ui.HorizontalListView
+		    <android.support.v4.view.ViewPager
 		        android:id="@+id/photo_select_container"
 		        android:layout_width="match_parent"
 		        android:layout_height="match_parent"

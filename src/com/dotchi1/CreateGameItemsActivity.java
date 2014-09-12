@@ -13,13 +13,13 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
@@ -30,13 +30,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.devsmart.android.ui.HorizontalListView;
-import com.devsmart.android.ui.HorizontalListView.OnCenteredListener;
 import com.dotchi1.backend.PostUrlTask;
+import com.dotchi1.backend.ViewPagerAdapter;
 import com.dotchi1.backend.json.JsonDataWrapper;
 import com.dotchi1.image.LiteImageLoader;
 
-public class CreateGameItemsActivity extends ActionBarActivity implements OnClickListener, OnCenteredListener, OnCheckedChangeListener {
+public class CreateGameItemsActivity extends ActionBarActivity implements OnClickListener, OnPageChangeListener, OnCheckedChangeListener {
 
 	public static final String TAG = "CreateGameItemsActivity";
 	public static final int CHOOSE_PHOTO = 100;
@@ -51,7 +50,7 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 	private Button favouritePackageButton;
 	private Button switchImagesButton;
 
-	private HorizontalListView packageItemView;
+	private ViewPager packageItemView;
 	private DotchiPackageItemAdapter adapter;
 	private ArrayList<JSONObject> list;
 	private ArrayList<JSONObject> dateList;
@@ -106,7 +105,6 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 					intent.putExtras(bundle);
 					startActivity(intent);
 				} else	{
-					// TODO: make this legal, if dates are viable.
 					Toast.makeText(getApplicationContext(), "Can't have 0 game choices", Toast.LENGTH_SHORT).show();
 				}
 			}
@@ -131,9 +129,10 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 		favouritePackageButton = (Button) findViewById(R.id.favourite_package_button);
 		switchImagesButton = (Button) findViewById(R.id.switch_images_button);
 		
-		packageItemView = (HorizontalListView) findViewById(R.id.photo_select_container);
-		packageItemView.setSnappingToCenter(true);
-		packageItemView.setOnCenteredListener(this);
+		packageItemView = (ViewPager) findViewById(R.id.photo_select_container);
+		packageItemView.setOnPageChangeListener(this);
+		//packageItemView.setSnappingToCenter(true);
+		//packageItemView.setOnCenteredListener(this);
 		
 		addItemButton = (ImageButton) findViewById(R.id.add_item_button);
 		
@@ -154,12 +153,23 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 			addPackageItemsToList(jsonStr);
 		}
 	}
-
 	
 	@Override
+	public void onPageScrollStateChanged(int state) {
+	}
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+	}
+
+	@Override
+	public void onPageSelected(int position) {
+		updateViews(position);
+	}
+	
 	public void updateViews(int position) {
 		if (list != null && list.size() > 0){
-			JSONObject item = adapter.getItem(position);
+			JSONObject item = list.get(position);
 			// We need to update title and event times here.
 			String titleText;
 			try {
@@ -175,11 +185,22 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 	
 	protected void addBlankItem()	{
 		Log.d(TAG, "adding blank item");
-		adapter.addEmptyObject();
-		packageItemView.scrollToEnd();
+		JSONObject o = new JSONObject();
+		try {
+			o.put("pic", "");
+			list.add(o);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		adapter.notifyDataSetChanged();
+		//packageItemView.scrollToEnd();
 	}
 	
-	protected void getOnePhoto()	{
+	/**
+	 * Gets a photo and inserts it into the 
+	 * @param position
+	 */
+	protected void getOnePhoto(final int position)	{
 		String rootUrl = getResources().getString(R.string.api_test_root_url);
 		String query = title.getText().toString();
 		new PostUrlTask()	{
@@ -203,8 +224,8 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 						addItemButton.setVisibility(View.VISIBLE);
 					} else	{
 						// This is fucking confusing!
-						list.set(adapter.getCount()-1, jo);
-						adapter.update(adapter.getCount()-1, jo);
+						list.set(position, jo);
+						adapter.notifyDataSetChanged();
 					}
 
 				} catch (JSONException e) {
@@ -243,7 +264,7 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 					e.printStackTrace();
 				}
 				list.set(position, jo);
-				adapter.update(position, jo);
+				adapter.notifyDataSetChanged();
 			}
 		} else if (requestCode == REQ_GET_PACKAGE_ITEMS)	{
 			// Add the items to the list;
@@ -265,8 +286,6 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 				JSONArray ja = new JSONArray(jsonStr);
 				for (int i = 0; i < ja.length(); i++)	{
 					list.add(ja.getJSONObject(i));
-					if (!isNewList)
-						adapter.add(ja.getJSONObject(i));
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -345,7 +364,7 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 			break;
 		case R.id.invite_self_choice_search_button:
 			// call getOnePhoto
-			getOnePhoto();
+			getOnePhoto(adapter == null? 0:adapter.getCount()-1);
 			break;
 		case R.id.add_item_button:
 			// push list to end, and then add a blank template
@@ -388,12 +407,11 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 		}
 	}
 
-	public class DotchiPackageItemAdapter extends ArrayAdapter<JSONObject> {
+	public class DotchiPackageItemAdapter extends ViewPagerAdapter {
 
 		private static final int DOTCHI_PACKAGE_ADAPTER_IMAGE_SIZE = 110;
 		
 		private Context context;
-		private ArrayList<JSONObject> objects;
 		private LiteImageLoader imageLoader;
 		private View emptyView;
 		
@@ -404,9 +422,8 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 		
 		public DotchiPackageItemAdapter(Context context, int textViewResourceId,
 				List<JSONObject> objects, View emptyView) {
-			super(context, textViewResourceId, objects);
+			//super(context, textViewResourceId, objects);
 			this.context = context;
-			this.objects = new ArrayList<JSONObject>(objects);
 			this.imageLoader = new LiteImageLoader(context);
 			this.emptyView = emptyView;
 			if (emptyView != null) 
@@ -418,12 +435,11 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 		}
 		
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			final JSONObject item = objects.get(position);
-			View view = convertView;
+		public View getView(final int position, final ViewPager pager) {
+			final JSONObject item = list.get(position);
 			//if (view == null)	{
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			view = inflater.inflate(R.layout.dotchi_package_item, null);
+			final View view = inflater.inflate(R.layout.dotchi_package_item, null);
 			//}
 			ImageView pictureView = (ImageView) view.findViewById(R.id.dotchi_package_picture);
 			try {
@@ -437,49 +453,12 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 			deleteObject.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
+					//destroyItem(pager, position, view);
 					list.remove(item);
-					remove(item);
+					notifyDataSetChanged();
 				}
 			});
 			return view;
-		}
-
-		@Override
-		public void remove(JSONObject object)	{
-			objects.remove(object);
-			super.remove(object);
-		}
-
-		@Override
-		public void add(JSONObject object) {
-			super.add(object);
-			objects.add(object);
-		}
-		
-		/**
-		 * Updates a currently set item in the list
-		 * @param position
-		 * @param newObject
-		 */
-		public void update(int position, JSONObject newObject)	{
-			Log.d("DotchiPackageAdapter", "Updating index " + position + " with " + newObject.toString());
-			objects.set(position, newObject);
-			notifyDataSetChanged();
-		}
-		
-		public void addEmptyObject()	{
-			JSONObject o = new JSONObject();
-			try {
-				o.put("pic", "");
-				add(o);
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-
-		@Override
-		public int getCount() {
-			return objects.size();
 		}
 
 		@Override
@@ -492,6 +471,13 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 					emptyView.setVisibility(View.VISIBLE);
 				}
 		}
+
+		@Override
+		public int getCount() {
+			return list.size();
+		}
 	}
+
+
 
 }
