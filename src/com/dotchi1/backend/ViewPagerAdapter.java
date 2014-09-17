@@ -1,9 +1,13 @@
 package com.dotchi1.backend;
 
+import java.util.ArrayList;
+
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.dotchi1.R;
 
 /**
  * Implementation of {@link PagerAdapter} that represents each page as a {@link View}.
@@ -12,6 +16,23 @@ import android.view.ViewGroup;
  */
 public abstract class ViewPagerAdapter extends PagerAdapter
 {
+	protected ArrayList<View> views = new ArrayList<View>();
+
+	/**
+	 * Used by ViewPager 
+	 * @param object represents the page; tell the ViewPager where the page should be displayed, from left-to-right. If the page no longer
+	 * exists, return POSITION_NONE
+	 */
+	@Override
+	public int getItemPosition (Object object)
+	{
+		return POSITION_NONE;
+//		int index = views.indexOf (object);
+//		if (index == -1)
+//			return POSITION_NONE;
+//		else
+//			return index;
+	}
 	/**
 	 * Get a View that displays the data at the specified position in the data set.
 	 *
@@ -49,8 +70,9 @@ public abstract class ViewPagerAdapter extends PagerAdapter
 	public Object instantiateItem(ViewGroup container, int position) {
 		ViewPager pager = (ViewPager) container;
 		View view = getView(position, pager);
-
-		pager.addView(view);
+		view.setBackgroundResource(R.drawable.gs_background);
+		container.addView(view);
+		addView(pager, view);
 
 		return view;
 	}
@@ -64,6 +86,35 @@ public abstract class ViewPagerAdapter extends PagerAdapter
 	 */
 	@Override
 	public void destroyItem(ViewGroup container, int position, Object view) {
-		((ViewPager) container).removeView((View) view);
+		container.removeView(views.get(position));
+	}
+	
+	public int addView(ViewPager pager, View v)	{
+		return addView(pager, v, views.size());
+	}
+	
+	public int addView(ViewPager pager, View v, int position)	{
+		//pager.setAdapter(null);
+		views.add(position, v);
+		//pager.setAdapter(this);
+		return position;
+	}
+	
+	public int removeView (ViewPager pager, View v) {
+		return removeView (pager, views.indexOf (v));
+	}
+	
+	public int removeView (ViewPager pager, int position)
+	{
+		// ViewPager doesn't have a delete method; the closest is to set the adapter
+		// again.  When doing so, it deletes all its views.  Then we can delete the view
+		// from from the adapter and finally set the adapter to the pager again.  Note
+		// that we set the adapter to null before removing the view from "views" - that's
+		// because while ViewPager deletes all its views, it will call destroyItem which
+		// will in turn cause a null pointer ref.
+		pager.setAdapter (null);
+		views.remove (position);
+		pager.setAdapter (this);
+		return position;
 	}
 }

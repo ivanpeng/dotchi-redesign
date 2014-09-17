@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:src="@drawable/new_feed_photo_default"/>
     
-    <ImageButton
+    <ImageView
         android:id="@+id/delete_package_item"
         android:layout_width="22dp"
         android:layout_height="22dp"

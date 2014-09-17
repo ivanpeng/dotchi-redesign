@@ -193,7 +193,8 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 			e.printStackTrace();
 		}
 		adapter.notifyDataSetChanged();
-		//packageItemView.scrollToEnd();
+		if (list != null && list.size() > 0)
+			packageItemView.setCurrentItem(list.size()-1, true);
 	}
 	
 	/**
@@ -449,13 +450,12 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 			} catch (JSONException e) {
 				Log.w("dotchi package", "image loading failed. Setting default.");
 			}
-			ImageButton deleteObject = (ImageButton) view.findViewById(R.id.delete_package_item);
+			ImageView deleteObject = (ImageView) view.findViewById(R.id.delete_package_item);
 			deleteObject.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					//destroyItem(pager, position, view);
 					list.remove(item);
-					notifyDataSetChanged();
+					removeView(pager, v);
 				}
 			});
 			return view;
@@ -471,7 +471,7 @@ public class CreateGameItemsActivity extends ActionBarActivity implements OnClic
 					emptyView.setVisibility(View.VISIBLE);
 				}
 		}
-
+		
 		@Override
 		public int getCount() {
 			return list.size();
