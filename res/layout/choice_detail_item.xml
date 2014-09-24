@@ -55,9 +55,9 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:textColor="@color/white"
-            android:text="Description"/>"
+            android:text="Description"/>
         
-        <com.devsmart.android.ui.HorizontalListView
+        <com.dotchi1.view.ScrollDisabledHorizontalListView
             android:id="@+id/choice_detail_friends_list"
             android:layout_height="45dp"
             android:layout_width="match_parent" />

@@ -1,6 +1,9 @@
 package com.dotchi1;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,10 +16,15 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
@@ -39,8 +47,6 @@ public class NewMainActivity extends ActionBarActivity {
 	private static FragmentManager mFragmentManager;
 	
 	private String dotchiId;
-	
-	
 	
 	private SlidingMenu slidingMenu;
 
@@ -80,7 +86,8 @@ public class NewMainActivity extends ActionBarActivity {
         slidingMenu.setShadowDrawable(R.drawable.shadow);
         slidingMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
         slidingMenu.setFadeDegree(0.35f);
-	   	slidingMenu.setMenu(R.layout.activity_test);
+	   	//slidingMenu.setMenu(R.layout.activity_test);
+        slidingMenu.setMenu(makeMenuLayout());
 	   	slidingMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
 
 		View actionbar = inflater.inflate(R.layout.menu_new_feed, null);
@@ -170,11 +177,44 @@ public class NewMainActivity extends ActionBarActivity {
 	    EasyTracker.getInstance(this).activityStop(this);  // Add this method.
 	  }// end of onStop
 
-	
-	@Override
-	public void onDestroy()	{
+	protected View makeMenuLayout(){
+		View view = getLayoutInflater().inflate(android.R.layout.list_content, null);
+		final String[] menuSelection = {"Logout"};
+		ArrayAdapter<String> menuAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, menuSelection);
+		ListView l = (ListView)view.findViewById(android.R.id.list);
+		l.setAdapter(menuAdapter);
+		l.setOnItemClickListener(new OnItemClickListener() {
 
-		super.onDestroy();
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				setLogoutButton();
+				
+			}
+		});
+		return view;
+	}
+	protected void setLogoutButton()	{
+		Session session = Session.openActiveSession(NewMainActivity.this, false, null);
+		if (session == null)	{
+			Log.d(TAG, "Making active session");
+			session = new Session(getApplicationContext());
+			Session.setActiveSession(session);
+		}
+		if (session.isOpened())	{
+			Log.d(TAG, "Logging out...");
+			session.closeAndClearTokenInformation();
+			// Finish Activity, return to main
+			SharedPreferences preferences = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE);
+			Editor editor = preferences.edit();
+			editor.putString(LoginActivity.IS_LOGGED_IN_KEY, "0");
+			
+			editor.commit();
+			Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			startActivity(intent);
+			finish();
+		}
 	}
 	
 	/**

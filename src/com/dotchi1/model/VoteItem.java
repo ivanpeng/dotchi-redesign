@@ -1,6 +1,7 @@
 package com.dotchi1.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 import org.codehaus.jackson.map.annotate.JsonDeserialize;
 
@@ -22,6 +23,8 @@ public class VoteItem extends GameCardItem implements Serializable {
 	@JsonDeserialize(using = BooleanDeserializer.class)
 	private boolean finalItem;
 
+	private ArrayList<String> voters;
+	
 	public int getVotes() {
 		return votes;
 	}
@@ -52,6 +55,14 @@ public class VoteItem extends GameCardItem implements Serializable {
 
 	public void setFinalItem(boolean finalItem) {
 		this.finalItem = finalItem;
+	}
+
+	public ArrayList<String> getVoters() {
+		return voters;
+	}
+
+	public void setVoters(ArrayList<String> voters) {
+		this.voters = voters;
 	}
 
 	public enum MedalType	{

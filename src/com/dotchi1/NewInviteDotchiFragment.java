@@ -36,6 +36,7 @@ public class NewInviteDotchiFragment extends Fragment {
 	ImageView gift;
 	ListView dotchiPackageListView;
 	ArrayList<String> packageList;
+	String locationCoords;
 	
 	// =================  Override method  ================= //
 	@Override
@@ -55,6 +56,10 @@ public class NewInviteDotchiFragment extends Fragment {
 		packageList = new ArrayList<String>();
 		Bundle args = getArguments();
 		String data = args.getString("json");
+		locationCoords = args.getString("coordinates");
+		if (locationCoords == null)
+			locationCoords = "";
+		
 		if (data == null || data.length() == 0)	{
 			String rootUrl = getResources().getString(R.string.api_test_root_url);
 			new PostUrlTask(){
@@ -88,11 +93,12 @@ public class NewInviteDotchiFragment extends Fragment {
 					String packageId;
 					try {
 						packageId = arr.getJSONObject(position).getString("package_id");
+						
 						//Toast.makeText(getActivity(), "Package ID " + packageId + " selected", Toast.LENGTH_SHORT).show();
 						Intent intent = new Intent(getActivity(), ShowDotchiPackageActivity.class);
 						intent.putExtra("package_id", Integer.parseInt(packageId));
 						intent.putExtra("package_title", packageList.get(position));
-						// TODO: start activity for result
+						intent.putExtra("coordinates", locationCoords);
 						// Need to have the root activity start the next activity, because we are intending on catching it there and rerouting
 						getActivity().startActivityForResult(intent, SelectPackageActivity.REQUEST_HOT_DOTCHI);
 					} catch (JSONException e) {

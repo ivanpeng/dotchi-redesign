@@ -29,7 +29,7 @@
     <string name="new_invite_select_friends">選擇朋友</string>
     <string name="title_activity_new_friend_select">NewFriendSelectActivity</string>
     <string name="title_activity_show_dotchi_package">ShowDotchiPackageActivity</string>
-    <string name="title_activity_event_choices">EventChoicesActivity</string>
+    <string name="title_activity_event_choices">Event Details</string>
     <string name="title_activity_choose_photo">ChoosePhotoActivity</string>
     <string name="title_activity_confirm_game_setting">ConfirmGameSettingActivity</string>
     <string name="title_activity_show_list">ShowListActivity</string>
@@ -61,5 +61,6 @@
     <string name="options_clear">Clear</string>
     <string name="options_exit">Exit</string>
     <string name="title_activity_gcm">GCMActivity</string>
+    <string name="title_activity_dotchi_package">DotchiPackageActivity</string>
 
 </resources>

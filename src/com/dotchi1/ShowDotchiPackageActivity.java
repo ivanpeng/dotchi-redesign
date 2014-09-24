@@ -30,7 +30,9 @@ import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dotchi1.backend.PostUrlTask;
 import com.dotchi1.image.LiteImageLoader;
@@ -43,12 +45,13 @@ public class ShowDotchiPackageActivity extends ActionBarActivity {
 	// Menu view 
 	private static ImageButton forwardButton;
 	// Main view
-	private static TextView selectedCountView;
 	private static int selectedCount = 0;
-	private TextView titleView;
+	
 	private GridView photoChoices;
 	private List<PackageItem> packageItems;
 	private PackageChoiceAdapter adapter;
+	
+	private ProgressBar progressBar;
 	
 	private static Handler uiHandler = new Handler(){
 
@@ -56,7 +59,6 @@ public class ShowDotchiPackageActivity extends ActionBarActivity {
 		public void handleMessage(Message msg) {
 			switch (msg.what)	{
 			case INCREMENT_COUNT:
-				selectedCountView.setText(""+selectedCount);
 				if (selectedCount > 0 )	{
 					forwardButton.setVisibility(View.VISIBLE);
 				} else
@@ -74,12 +76,19 @@ public class ShowDotchiPackageActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_show_dotchi_package);
+		
 		String rootUrl = getResources().getString(R.string.api_test_root_url);
+		String dotchiId = getSharedPreferences("com.dotchi1", Context.MODE_PRIVATE).getString("DOTCHI_ID", "0");
 		int packageId = getIntent().getIntExtra("package_id", 2);
+		String coordinates = getIntent().getStringExtra("coordinates");
+		if (coordinates == null)	{
+			coordinates = "";
+		}
+		
 		String packageTitle = getIntent().getStringExtra("package_title");
 		
-		selectedCountView = (TextView) findViewById(R.id.dotchi_package_count);
 		photoChoices = (GridView) findViewById(R.id.dotchi_package_grid);
+		progressBar = (ProgressBar) findViewById(R.id.loading_circle);
 		
 		//TODO set action bar
 		LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -115,10 +124,11 @@ public class ShowDotchiPackageActivity extends ActionBarActivity {
 		// Grab dotchi package and display items
 		//photoChoices.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
 
-		new PostUrlTask()	{
+		PostUrlTask getPackageContentTask = new PostUrlTask()	{
 			@Override
 			protected void onPostExecute(String result) {
 				result = processResult(result);
+				progressBar.setVisibility(View.INVISIBLE);
 				try {
 					JSONArray arr = new JSONObject(result).getJSONArray("data");
 					ObjectMapper mapper = new ObjectMapper();
@@ -138,7 +148,12 @@ public class ShowDotchiPackageActivity extends ActionBarActivity {
 					e.printStackTrace();
 				}
 			}
-		}.execute(rootUrl + "/game/get_dotchi_package_item", "package_id", String.valueOf(packageId));
+		};
+		if (coordinates.length() > 0)	{
+			Toast.makeText(this, "Sending out coordinates of " + coordinates, Toast.LENGTH_LONG).show();
+			getPackageContentTask.execute(rootUrl + "/game/get_dotchi_package_item", "package_id", String.valueOf(packageId), "dotchi_id", dotchiId, "coordinates", coordinates);
+		} else
+			getPackageContentTask.execute(rootUrl + "/game/get_dotchi_package_item", "package_id", String.valueOf(packageId));
 		photoChoices.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override

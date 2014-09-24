@@ -8,7 +8,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Handler;
 import android.os.Message;
@@ -17,18 +17,19 @@ import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.devsmart.android.ui.HorizontalListView;
+import com.dotchi1.GameActivity;
 import com.dotchi1.R;
 import com.dotchi1.image.LiteImageLoader;
 import com.dotchi1.model.BaseFeedData;
@@ -173,6 +174,7 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 		holder.timeRemainingView = (TextView) view.findViewById(R.id.new_feed_end_time);
 		holder.descriptionView = (TextView) view.findViewById(R.id.new_feed_description);
 		holder.keyView = view.findViewById(R.id.new_feed_is_secret_image);
+		holder.startGameButton = (Button) view.findViewById(R.id.start_game);
 		holder.photoRoll = (ViewPager) view.findViewById(R.id.photo_roll_list);
 		holder.settingsLayout = (Spinner) view.findViewById(R.id.new_feed_settings_drawer);
 		return holder;
@@ -207,7 +209,30 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 			holder.photoRoll.setVisibility(View.INVISIBLE);
 			emptyPhotoRoll.setVisibility(View.VISIBLE);
 		}
-		
+		if (item.getIsPlay())
+			holder.startGameButton.setVisibility(View.INVISIBLE);
+		else	{
+			holder.startGameButton.setVisibility(View.VISIBLE);
+			holder.startGameButton.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// Start game activity, with clear activity back to main
+					Intent intent = new Intent(context, GameActivity.class);
+					// put extras
+					intent.putExtra("game_id", item.getGameId());
+					intent.putExtra("game_title", item.getGameTitle());
+					intent.putExtra("dotchi_time", item.getDotchiTime());
+					intent.putExtra("is_personal", item.getIsPersonal());
+					intent.putExtra("is_secret", item.getIsSecret());
+					intent.putExtra("is_official", false);
+					//intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					//TODO: make sure this is correct
+					((Activity) context).startActivity(intent);
+					((Activity) context).finish();
+				}
+			});
+		}
 		// Before we proceed, set the height based on height of device
 		int height = screenWidth*2/3;
 		// get RelativeLayout params and then set that, not horizontal listview
@@ -265,7 +290,7 @@ public class NewFeedAdapter extends ArrayAdapter<BaseFeedData> {
 		TextView descriptionView;
 		View keyView;
 		ViewPager photoRoll;
-
+		Button startGameButton;
 		Spinner settingsLayout;
 		
 	}

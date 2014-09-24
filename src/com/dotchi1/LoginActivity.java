@@ -49,11 +49,16 @@ public class LoginActivity extends FragmentActivity implements OnClickListener{
 	private static final List<String> PUBLISH_PERMISSIONS = Arrays.asList("publish_actions", "publish_stream");
 	private boolean pendingPublishReauthorization = false;
 	
+	private ImageView fbLogin;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_login);
+		
+		fbLogin = (ImageView) findViewById(R.id.login_facebook);
+		
 		url = getResources().getString(R.string.api_test_root_url) + "/users/login";
 		// before we begin
 		int cleared = clearCache();
@@ -96,7 +101,6 @@ public class LoginActivity extends FragmentActivity implements OnClickListener{
 			}.execute();
 		} else {
 			// Make the button appear and set onClickListener
-			ImageView fbLogin = (ImageView) findViewById(R.id.login_facebook);
 			fbLogin.setVisibility(View.VISIBLE);
 			final Animation animationFadeIn = AnimationUtils.loadAnimation(this, R.animator.fade_in);
 			fbLogin.startAnimation(animationFadeIn);
@@ -144,7 +148,9 @@ public class LoginActivity extends FragmentActivity implements OnClickListener{
 					Exception exception) {
 				Log.d(TAG,session.getPermissions().toString());
 				if (session.isOpened())	{
-					
+					// Before we continue, set the button to invisible
+					fbLogin.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(), R.animator.fade_out));
+					fbLogin.setVisibility(View.INVISIBLE);
 					Request.newMeRequest(session, new Request.GraphUserCallback() {
 						
 						@Override

@@ -19,7 +19,7 @@
 	        android:layout_alignParentTop="true"
 	        android:layout_centerHorizontal="true"
 	        android:adjustViewBounds="true"
-	        android:scaleType="centerInside"
+	        android:scaleType="centerCrop"
 	        android:background="@color/gray"
 	        android:src="@drawable/new_feed_photo_default" />
 	</RelativeLayout>

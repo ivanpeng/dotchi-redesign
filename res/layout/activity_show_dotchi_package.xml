@@ -1,42 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-    <!-- Header first, then grid layout -->
-    <LinearLayout 
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:orientation="horizontal"
-        android:padding="3dp"
-        android:background="@drawable/new_footer_background" >
-        
-        <ImageView 
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/friend_checkmark_count" />
-        
-        <TextView 
-            android:id="@+id/dotchi_package_count"
-            android:layout_width="18dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:text="0"
-            />
-        <TextView 
-            android:id="@+id/dotchi_package_title"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:textSize="16sp"
-            android:text="Title"
-            android:textColor="@color/white"
-            />
-    </LinearLayout>
     
     <GridView
         android:id="@+id/dotchi_package_grid"
@@ -45,6 +12,12 @@
         android:numColumns="2"
         android:horizontalSpacing="2dp"
         android:verticalSpacing="2dp" />
+    <ProgressBar 
+        android:id="@+id/loading_circle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"/>
     
-</LinearLayout>
+</RelativeLayout>
 
